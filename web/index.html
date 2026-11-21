@@ -165,7 +165,7 @@
       <p>Type how many minutes you have and get the best combination of up to four of my records to fill it.</p>
       <p class="fit-ask"><label for="fit-minutes">I've got</label>
         <input id="fit-minutes" type="number" min="1" max="6000" value="60" inputmode="numeric"> minutes.
-        <span class="fit-presets"><button type="button" data-fit="20">a coffee</button><button type="button" data-fit="45">a commute</button><button type="button" data-fit="120">an evening</button><button type="button" data-fit="240">a vibe coding session</button></span></p>
+        <span class="fit-presets"><button type="button" data-fit="20">a coffee</button><button type="button" data-fit="45">making dinner</button><button type="button" data-fit="120">an evening</button><button type="button" data-fit="240">a vibe coding session</button></span></p>
       <div id="fit-out" aria-live="polite"></div>
       <details class="query" data-query="fit"></details>
     </div>
@@ -181,9 +181,12 @@
 <dialog id="connect" class="connect">
   <form method="dialog">
     <h2>Run it live</h2>
+    <p class="connect-soon"><span class="soon-tag">Coming soon</span> My own ClickHouse Cloud service behind this button, so Run live
+      works without typing anything. For now it needs <a href="https://github.com/tylerhannan/every-liner-note#run-it-live">a ClickHouse
+      of your own</a>.</p>
     <p>Everything on this page came out of SQL. Connect a ClickHouse with the <code>discogs</code> database loaded and you can run
       each query again, or edit it first. Use a read-only user. The password stays in this browser tab.</p>
-    <label>HTTP endpoint <input name="url" type="url" required placeholder="http://localhost:8123 or https://host.clickhouse.cloud:8443" autocomplete="url"></label>
+    <label>HTTP endpoint <input name="url" type="url" required autofocus placeholder="http://localhost:8123 or https://host.clickhouse.cloud:8443" autocomplete="url"></label>
     <label>User <input name="user" placeholder="default" autocomplete="username"></label>
     <label>Password <input name="password" type="password" autocomplete="current-password"></label>
     <label class="check"><input name="remember" type="checkbox" checked> Remember until this tab closes</label>

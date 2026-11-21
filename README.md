@@ -2,6 +2,10 @@
 
 I wanted to know what my record shelf looks like next to everything else on vinyl. So I loaded the whole Discogs catalogue into ClickHouse and asked it. This repo builds a static page out of the answers. Every number on it comes from a SQL query you can open, copy, and, if you connect a ClickHouse of your own, run again.
 
+You can see it at [tylerhannan.github.io/every-liner-note](https://tylerhannan.github.io/every-liner-note/).
+
+![The top of the page: the headline, the Discogs and shelf numbers, and the first two rows of my records as sleeves](docs/screenshot.png)
+
 ## Set up
 
 You need three things.
