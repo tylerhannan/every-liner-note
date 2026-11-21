@@ -4,7 +4,10 @@ I wanted to know what my record shelf looks like next to everything else on viny
 
 You can see it at [tylerhannan.github.io/every-liner-note](https://tylerhannan.github.io/every-liner-note/).
 
-![The top of the page: the headline, the Discogs and shelf numbers, and the first two rows of my records](docs/screenshot.jpg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshot-dark.jpg">
+  <img alt="The top of the page: the headline, the Discogs and shelf numbers, and the first two rows of my records" src="docs/screenshot.jpg">
+</picture>
 
 ## Set up
 
