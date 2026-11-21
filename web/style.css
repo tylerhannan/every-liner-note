@@ -148,19 +148,38 @@ details.more > summary::before { content: "▸ "; }
 details.more[open] > summary::before { content: "▾ "; }
 details.more > * + * { margin-top: 14px; }
 
-/* Numbered lists: the people, and what to buy next */
+/* Numbered list: what to buy next */
 ol.people { list-style: none; padding: 0; max-width: 72ch; counter-reset: item; }
 ol.people li { counter-increment: item; display: grid; grid-template-columns: 2.6em 1fr; row-gap: 2px; padding: 14px 0; border-bottom: 1px solid var(--grid); }
 ol.people li::before { content: counter(item, decimal-leading-zero); grid-row: 1 / span 4; font: 13px var(--mono); color: var(--ink-3); padding-top: 5px; }
 ol.people li > * { grid-column: 2; }
 .glue-name, .next-title { font: 600 19px/1.3 var(--serif); text-decoration: none; }
-.glue-name a { text-decoration: none; }
-.glue-name a:hover, .next-title:hover, .glue-on a:hover { text-decoration: underline; }
+.glue-name:hover, .next-title:hover { text-decoration: underline; }
 .glue-meta { font: 12px var(--mono); color: var(--ink-3); }
 .glue-on { font-size: 14px; color: var(--ink-2); }
-.glue-on a { text-decoration: none; }
-.glue-note { margin-top: 6px; font: italic 15px/1.5 var(--serif); color: var(--ink-2); }
 .next li:first-child .next-title { color: var(--reissue); }
+
+/* C1: a card for each set of my records that share people, with a thread from sleeve to sleeve */
+.pairs { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.pair { min-width: 0; border: 1px solid var(--rule); border-radius: 8px; padding: 18px 18px 14px; display: flex; flex-direction: column; gap: 16px; }
+.pair.wide { grid-column: 1 / -1; }
+.pair-sleeves { --thread: 30px; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 104px)); gap: var(--thread); }
+.pair-sleeves .sleeve { z-index: 0; }
+.pair-sleeves .sleeve:hover, .pair-sleeves .sleeve:focus-visible { z-index: 2; }
+.pair-sleeves .sleeve:not(:last-child)::after { content: ""; position: absolute; z-index: -1; top: 50%; left: 100%; width: var(--thread); border-top: 1px solid var(--ink-3); }
+.pair-who { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.pair-people { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.pair-people li { display: flex; flex-direction: column; }
+.pair-people .glue-name { font-size: 18px; }
+.pair-notes > summary { cursor: pointer; font: 12px var(--mono); color: var(--ink-3); list-style: none; }
+.pair-notes > summary::-webkit-details-marker { display: none; }
+.pair-notes > summary::before { content: "▸ "; }
+.pair-notes[open] > summary::before { content: "▾ "; }
+.pair-notes p { margin-top: 8px; font: italic 15px/1.5 var(--serif); color: var(--ink-2); }
+@media (min-width: 760px) {
+  .pair.wide { flex-direction: row; align-items: flex-start; gap: 28px; }
+  .pair.wide .pair-sleeves { flex: none; grid-template-columns: repeat(var(--n), 104px); }
+}
 
 /* Cover wall: typographic sleeves with a record peeking out; the cover comes from Discogs on hover */
 .cover-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 22px 26px; padding-right: 26px; }
@@ -187,8 +206,16 @@ ol.people li > * { grid-column: 2; }
 .sleeve.show-cover img { opacity: 1; }
 .credit { position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 6px; font: 10px/1.3 var(--mono); color: #fff; background: rgba(0, 0, 0, 0.62); opacity: 0; transition: opacity 0.25s; }
 .sleeve.show-cover .credit { opacity: 1; }
-.loading { position: absolute; top: 8px; right: 8px; font: 10px var(--mono); color: var(--ink-3); opacity: 0; }
+/* "fetching cover…" sits in the credit strip, so it never covers the name */
+.loading { position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 6px; font: 10px/1.3 var(--mono); color: #fff; background: rgba(0, 0, 0, 0.62); opacity: 0; }
 .sleeve.fetching .loading { opacity: 1; }
+.sleeve.mini .sleeve-text { padding: 8px; gap: 3px; }
+.sleeve.mini .sleeve-artist { font-size: 10px; }
+.sleeve.mini .sleeve-title { font-size: 13px; }
+.sleeve.mini .sleeve-foot { font-size: 10px; }
+.sleeve.mini .sleeve-cat { display: none; }
+.sleeve.mini .credit { font-size: 9px; padding: 2px 4px; }
+.sleeve.mini .loading { font-size: 9px; padding: 2px 4px; }
 @media (prefers-reduced-motion: reduce) { .disc, .jacket img, .credit { transition: none; } html { scroll-behavior: auto; } }
 
 /* Connect dialog */
@@ -234,6 +261,11 @@ ol.people li > * { grid-column: 2; }
   .cover-wall { grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 14px 18px; padding-right: 18px; }
   .sleeve-title { font-size: 13px; }
   .sleeve-text { padding: 8px; }
+  .pair-sleeves { --thread: 16px; }
+  .pair.wide .pair-sleeves { grid-template-columns: repeat(2, minmax(0, 104px)); }
+  .pair.wide .pair-sleeves .sleeve::after { display: none; }
+  .sleeve.mini .sleeve-text { padding: 6px; }
+  .sleeve.mini .sleeve-title { font-size: 12px; }
 }
 
 /* Borrowed in spirit from click-ui: big stats, a code block with copy, a toast */

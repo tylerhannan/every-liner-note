@@ -1,18 +1,38 @@
 (() => {
   const D = window.ACT3;
   const byRelease = new Map(window.ACT1.records.rows.map(r => [r.release_id, r]));
-  const { fmt, el, text, rightRounded, cleanName, showTip, hideTip, queries, aiPanels, onDraw, onLive, missing } = window.VIZ;
+  const { fmt, cleanName, queries, aiPanels, onLive, missing, sleeve } = window.VIZ;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-  // C1: the people who keep turning up, with their build-time aiGenerate note
-  const renderGlue = rows => { document.getElementById("glue").innerHTML = rows.map(g => {
-    const recs = g.records.map(id => byRelease.get(id)).filter(Boolean)
-      .map(r => `<a href="https://www.discogs.com/release/${r.release_id}"><i>${esc(r.title)}</i></a>`).join(", ");
-    const note = D.notes[String(g.artist_id)];
-    return `<li><span class="glue-name"><a href="https://www.discogs.com/artist/${g.artist_id}">${esc(cleanName(g.person))}</a></span>` +
-      `<span class="glue-meta">${esc(g.roles.filter(Boolean).slice(0, 3).join(", "))} · on ${fmt(g.works_overall)} records overall</span>` +
-      `<span class="glue-on">${recs}</span>${note ? `<span class="glue-note">${esc(note)}</span>` : ""}</li>`;
-  }).join(""); };
+  // C1: one card per set of my records that share people, with the build-time aiGenerate notes folded away
+  const roleList = g => [...new Set(g.roles.filter(Boolean).map(r => r.replace(/ \(.*\)$/, "")))].slice(0, 3).join(", ");
+  const renderGlue = rows => {
+    const groups = new Map();
+    rows.forEach(g => {
+      const key = [...g.records].sort((a, b) => a - b).join(",");
+      if (!groups.has(key)) groups.set(key, { records: g.records, people: [] });
+      groups.get(key).people.push(g);
+    });
+    const list = document.getElementById("glue");
+    list.innerHTML = "";
+    groups.forEach(({ records, people }) => {
+      const recs = records.map(id => byRelease.get(id)).filter(Boolean).sort((a, b) => (a.first_out || 9999) - (b.first_out || 9999));
+      const li = document.createElement("li");
+      li.className = recs.length > 2 ? "pair wide" : "pair";
+      const sleeves = document.createElement("div");
+      sleeves.className = "pair-sleeves";
+      sleeves.style.setProperty("--n", recs.length);
+      recs.forEach(r => sleeves.appendChild(sleeve(r, { mini: true })));
+      li.appendChild(sleeves);
+      const notes = people.map(g => D.notes[String(g.artist_id)]).filter(Boolean);
+      li.insertAdjacentHTML("beforeend", `<div class="pair-who"><ul class="pair-people">${people.map(g =>
+        `<li><a class="glue-name" href="https://www.discogs.com/artist/${g.artist_id}">${esc(cleanName(g.person))}</a>` +
+        `<span class="glue-meta">${esc(roleList(g))} · on ${fmt(g.works_overall)} records in all</span></li>`).join("")}</ul>` +
+        (notes.length ? `<details class="pair-notes"><summary>Liner notes, by <code>aiGenerate</code></summary>${notes.map(n => `<p>${esc(n)}</p>`).join("")}</details>` : "") +
+        `</div>`);
+      list.appendChild(li);
+    });
+  };
   renderGlue(D.glue.rows);
 
   // C3: what to buy next

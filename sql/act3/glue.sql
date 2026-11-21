@@ -30,4 +30,4 @@ FROM glue AS g
 LEFT JOIN (SELECT artist_id, any(person_works) AS works_overall FROM discogs.edges WHERE artist_id IN (SELECT artist_id FROM glue) GROUP BY artist_id) AS d
     ON d.artist_id = g.artist_id
 ORDER BY g.played_or_produced DESC, g.families DESC, d.works_overall
-LIMIT 12
+LIMIT 15

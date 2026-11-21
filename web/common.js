@@ -168,6 +168,92 @@ window.VIZ = (() => {
     withCopy(pre);
   });
 
+  // Sleeves are typographic; a real cover is fetched from the Discogs API only when someone hovers or focuses one.
+  // API content can't be shown more than 6 hours stale, so covers are cached for 5.5 at most.
+  const CACHE_MS = 5.5 * 3600 * 1000;
+  try {
+    for (const k of Object.keys(localStorage)) {
+      if (!k.startsWith("cover:")) continue;
+      const c = JSON.parse(localStorage.getItem(k) || "null");
+      if (!c || Date.now() - c.t >= CACHE_MS) localStorage.removeItem(k);
+    }
+  } catch {}
+  const cached = id => {
+    try {
+      const c = JSON.parse(localStorage.getItem("cover:" + id) || "null");
+      return c && Date.now() - c.t < CACHE_MS ? c.url : null;
+    } catch { return null; }
+  };
+  const remember = (id, url) => { try { localStorage.setItem("cover:" + id, JSON.stringify({ url, t: Date.now() })); } catch {} };
+
+  // One API call at a time, 2.5 s apart, so sweeping the mouse across the wall stays under 25 a minute
+  const pendingCovers = new Map();
+  let lastCall = 0, waitUntil = 0;
+  const coverUrl = id => {
+    const hit = cached(id);
+    if (hit) return Promise.resolve(hit);
+    if (pendingCovers.has(id)) return pendingCovers.get(id);
+    const p = new Promise(resolve => {
+      const go = async () => {
+        const delay = Math.max(lastCall + 2500, waitUntil) - Date.now();
+        if (delay > 0) return setTimeout(go, delay);
+        lastCall = Date.now();
+        try {
+          const res = await fetch(`https://api.discogs.com/releases/${id}`);
+          if (res.status === 429) { waitUntil = Date.now() + 60000; return setTimeout(go, 60000); }
+          const data = res.ok ? await res.json() : {};
+          const image = (data.images || []).find(i => i.type === "primary") || (data.images || [])[0];
+          if (image) remember(id, image.uri);
+          resolve(image ? image.uri : null);
+        } catch { resolve(null); }
+      };
+      go();
+    });
+    pendingCovers.set(id, p);
+    p.then(() => pendingCovers.delete(id));
+    return p;
+  };
+
+  // A record on my shelf as a sleeve: the disc's label is coloured by how long after the album this pressing came out
+  const band = r => (!r.pressed || !r.first_out ? "unknown" : r.pressed - r.first_out >= 10 ? "reissue" : r.pressed - r.first_out >= 2 ? "catalogue" : "new");
+  const sleeve = (r, { mini = false } = {}) => {
+    const a = document.createElement("a");
+    a.className = mini ? "sleeve mini" : "sleeve";
+    a.href = `https://www.discogs.com/release/${r.release_id}`;
+    a.style.setProperty("--label", r.pressed && r.first_out ? `var(--${band(r)})` : "var(--ink-3)");
+    a.setAttribute("aria-label", `${cleanName(r.artist)}, ${r.title}, on Discogs`);
+    a.innerHTML = `<span class="disc" aria-hidden="true"></span>` +
+      `<span class="jacket"><span class="sleeve-text"><span class="sleeve-artist"></span><span class="sleeve-title"></span>` +
+      `<span class="sleeve-foot"><span class="sleeve-cat"></span><span class="sleeve-year"></span></span></span>` +
+      `<img alt="" decoding="async"><span class="credit">Data provided by Discogs</span>` +
+      `<span class="loading" aria-hidden="true">fetching cover…</span></span>`;
+    a.querySelector(".sleeve-artist").textContent = cleanName(r.artist);
+    a.querySelector(".sleeve-title").textContent = r.title;
+    a.querySelector(".sleeve-cat").textContent = r.catno.split(",")[0];
+    a.querySelector(".sleeve-year").textContent = r.pressed || "n.d.";
+    const img = a.querySelector("img");
+    img.alt = `Cover of ${r.title}`;
+    let active = false;
+    const show = () => {
+      active = true;
+      a.classList.add("out");
+      if (img.src) return a.classList.add("show-cover");
+      a.classList.add("fetching");
+      coverUrl(r.release_id).then(url => {
+        a.classList.remove("fetching");
+        if (!url) return;
+        img.addEventListener("load", () => { if (active) a.classList.add("show-cover"); }, { once: true });
+        img.src = url;
+      });
+    };
+    const hide = () => { active = false; a.classList.remove("out", "show-cover", "fetching"); };
+    a.addEventListener("pointerenter", show);
+    a.addEventListener("pointerleave", hide);
+    a.addEventListener("focus", show);
+    a.addEventListener("blur", hide);
+    return a;
+  };
+
   const drawers = [];
   const onDraw = fn => { drawers.push(fn); fn(); };
   const redraw = () => drawers.forEach(fn => fn());
@@ -216,11 +302,11 @@ window.VIZ = (() => {
     window.addEventListener("scroll", watch, { passive: true });
     watch();
 
-    // Talk mode: arrow keys step through the tracks
+    // Talk mode: left and right step through the tracks (so do PageUp and PageDown, for clickers). Up and down still scroll.
     document.addEventListener("keydown", ev => {
       // Only text fields keep their arrow keys; a SQL panel's summary keeps focus after a click and must not swallow them
       if (ev.target.closest("input, textarea, select, [contenteditable]") || ev.metaKey || ev.ctrlKey || ev.altKey) return;
-      const next = ["ArrowDown", "ArrowRight", "PageDown", "j"].includes(ev.key), prev = ["ArrowUp", "ArrowLeft", "PageUp", "k"].includes(ev.key);
+      const next = ["ArrowRight", "PageDown", "j"].includes(ev.key), prev = ["ArrowLeft", "PageUp", "k"].includes(ev.key);
       if (!next && !prev) return;
       ev.preventDefault();
       const mid = window.innerHeight * 0.3;
@@ -234,5 +320,5 @@ window.VIZ = (() => {
     });
   });
 
-  return { fmt, pct, el, text, niceTicks, topRounded, rightRounded, clip, cleanName, showTip, hideTip, key, fill, queries, aiPanels, onDraw, toast, onLive, missing };
+  return { fmt, pct, el, text, niceTicks, topRounded, rightRounded, clip, cleanName, showTip, hideTip, key, fill, queries, aiPanels, onDraw, toast, onLive, missing, sleeve };
 })();

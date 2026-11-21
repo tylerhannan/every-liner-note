@@ -84,11 +84,21 @@ def write_people_notes():
     # People notes: the facts for each glue person, then aiGenerate on each
     glue = run(os.path.join(ROOT, "sql", "act3", "glue.sql"))["rows"]
     titles = {r["release_id"]: r for r in run(os.path.join(ROOT, "sql", "act1", "records.sql"))["rows"]}
+    # Roles record by record, so the model never has to guess which role went with which record
+    ids = ",".join(str(g["artist_id"]) for g in glue) or "0"
+    per = json.loads(ch(["--format", "JSON", "--query", f"""
+        SELECT artist_id, release_id, groupUniqArray(role) AS roles FROM discogs.credits
+        WHERE artist_id IN ({ids}) AND release_id IN (SELECT release_id FROM discogs.shelf) AND role != ''
+        GROUP BY artist_id, release_id"""]))["data"]
+    roles = {(r["artist_id"], r["release_id"]): r["roles"] for r in per}
+    # A small model reads Written-By as "wrote the album"; it means a song on it
+    SAY = {"Written-By": "Written-By (a songwriting credit for a song on it)"}
     with open(os.path.join(AI_DIR, "people_facts.jsonl"), "w", encoding="utf-8") as f:
         for g in glue:
-            recs = "; ".join(f'"{titles[i]["title"]}" by {titles[i]["artist"]}' for i in g["records"] if i in titles)
-            facts = (f"{g['person']} is credited as {', '.join(r for r in g['roles'] if r)} on these records: {recs}. "
-                     f"Across Discogs they are credited on {g['works_overall']} records in total.")
+            recs = "; ".join(f'"{titles[i]["title"]}" by {titles[i]["artist"]}, as {", ".join(SAY.get(r, r) for r in roles.get((g["artist_id"], i), []))}'
+                             for i in g["records"] if i in titles)
+            facts = (f"{g['person']} is credited on these records: {recs}. "
+                     f"Across Discogs they are credited on {g['works_overall']:,} records in total, in all sorts of roles.")
             f.write(json.dumps({"artist_id": g["artist_id"], "facts": facts}, ensure_ascii=False) + "\n")
     notes = ch(["--format", "TSV", "--queries-file", os.path.join(ROOT, "sql", "ai", "people_notes.sql")], AI_STORE)
     open(os.path.join(AI_DIR, "people_notes.tsv"), "w", encoding="utf-8").write(notes)

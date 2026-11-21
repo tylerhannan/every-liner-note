@@ -43,7 +43,8 @@
       <span data-fill="last-year"></span>, and between them they credit <span data-fill="people"></span> people. Discogs knows
       <span data-fill="versions"></span> different pressings of these same albums, which is a lot of ways to sell the same record.</p>
     <div class="cover-wall" id="cover-wall"></div>
-    <p class="footnote">Hover over a sleeve to slide the record out. The cover comes from Discogs.</p>
+    <p class="footnote">Hover over a sleeve to slide the record out and fetch its cover from the Discogs API. Their terms say covers
+      can't be kept for more than six hours, so your browser forgets them after five and a half.</p>
     <details class="query" data-query="summary"></details>
   </section>
 
@@ -121,9 +122,10 @@
   <section class="track" id="c1" tabindex="-1">
     <div class="track-no">C1</div>
     <h2>Who made it?</h2>
-    <p>The same people keep turning up on my records, across different artists. These are the credits on my own copies, the exact
-      pressings on my shelf. The notes are <code>aiGenerate</code>, written once at build time from each person's credits and nothing else.</p>
-    <ol class="people" id="glue"></ol>
+    <p>The same people keep turning up on my records, across different artists. Each card is a few of my records and who they have
+      in common, going by the credits on my own copies, the exact pressings on my shelf. The liner notes are <code>aiGenerate</code>,
+      written once at build time from each person's credits.</p>
+    <ol class="pairs" id="glue"></ol>
     <details class="query" data-query="glue"></details>
     <details class="query ai-query" data-ai="notes_sql"></details>
   </section>
@@ -175,7 +177,7 @@
       Catalogue data comes from the <a href="https://data.discogs.com/">Discogs monthly data dumps</a> (CC0).</p>
   </footer>
 </main>
-<div class="keys" aria-hidden="true">↑ ↓ to step through</div>
+<div class="keys" aria-hidden="true">← → to step through</div>
 <dialog id="connect" class="connect">
   <form method="dialog">
     <h2>Run it live</h2>
