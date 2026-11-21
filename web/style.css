@@ -58,7 +58,8 @@ code { font-family: var(--mono); font-size: 0.9em; }
 .theme-toggle:hover, .connect-open:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .is-live .connect-open { border-color: var(--catalogue); color: var(--catalogue); }
 .is-live .connect-open::before { content: "● "; }
-.connect-soon { margin: 0 0 14px; padding: 10px 12px; border: 1px dashed var(--reissue); border-radius: 6px; font-size: 14px; color: var(--ink-2); }
+.connect-soon, .wip { margin: 0 0 14px; padding: 10px 12px; border: 1px dashed var(--reissue); border-radius: 6px; font-size: 14px; color: var(--ink-2); }
+.wip { margin: 28px 0 0; max-width: 64ch; font-size: 15px; }
 .soon-tag { display: inline-block; margin-right: 6px; font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--reissue); }
 
 /* Sides and tracks: one rhythm, every block the same distance from the last */

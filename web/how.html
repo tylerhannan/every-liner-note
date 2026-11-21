@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>How It Works</title>
   <meta name="description" content="How the shelf page is built: Discogs dumps, Parquet, ClickHouse, and a little AI at build time.">
+  <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="How it works: Reading every liner note at once">
+  <meta property="og:description" content="How the shelf page is built from the Discogs dumps, my collection export, and ClickHouse.">
+  <meta property="og:url" content="https://tylerhannan.github.io/every-liner-note/how.html">
+  <meta property="og:image" content="https://tylerhannan.github.io/every-liner-note/preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Reading every liner note at once: 19.6 million releases on Discogs, 252 million credits, and my records as sleeves">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -19,13 +31,16 @@
     <a class="how-link" href="index.html">Back to the record</a>
   </header>
 
+  <p class="wip"><span class="soon-tag">Work in progress</span> I'm still writing this page. The steps and numbers are right, but the
+    words are a first draft.</p>
+
   <!-- DRAFT COPY: written by Claude in Tyler's voice, for Tyler to rewrite -->
   <section class="track">
     <div class="track-no">01</div>
-    <h1>One month of Discogs, one shelf, one database</h1>
-    <p class="lede">Everything on the record comes from two places: the monthly Discogs data dump, which is the whole catalogue as
-      CC0, and the CSV export of my own collection. ClickHouse does the rest. Every number on the page comes out of a SQL query you
-      can open, and, if you connect a ClickHouse of your own, run again.</p>
+    <h1>Where the numbers come from</h1>
+    <p class="lede">Everything on the record starts with the monthly Discogs data dump, which is the whole catalogue under CC0, and the
+      CSV export of my own collection. ClickHouse does the rest. Every number on the page comes out of a SQL query you can open, and,
+      if you connect a ClickHouse of your own, run again.</p>
 
     <ol class="flow">
       <li><b>Discogs data dump</b><span>12.7 GB of gzipped XML: 19.6M releases, 10.3M artists, 2.6M albums, 2.4M labels</span></li>
@@ -45,10 +60,11 @@
       <dd>Download the dump, convert it, load it. Discogs publishes a full snapshot each month rather than changes, so the whole thing
         gets rebuilt. It's cheap enough that this is fine.</dd>
       <dt>Once per build, with AI</dt>
-      <dd>ClickHouse's AI functions run once, at build time, and never on the live page. <code>aiClassify</code> sorts the 85,688 ways
-        Discogs describes vinyl colour into plain colours (the 2,013 most common phrases so far, about 95% right on a random check), and
-        <code>aiGenerate</code> writes the short notes about the people on my shelf. Locally that's a small model through Ollama; in ClickHouse
-        Cloud it's the same SQL with a bigger one.</dd>
+      <dd>ClickHouse's AI functions run once, at build time, and never on the live page. <code>aiClassify</code> sorts the ways Discogs
+        describes vinyl colour into plain colours. Limited vinyl since 2015 alone has 85,688 different phrases, and it has done 2,058 of
+        them so far (the 2,000 most common, plus the ones on my shelf), about 95% right on a random check. <code>aiGenerate</code> writes
+        the short notes about the people on my shelf. For now that's
+        a small model on my laptop through Ollama. On ClickHouse Cloud it'll be the same SQL with a bigger one.</dd>
       <dt>Every time you open the page</dt>
       <dd>Nothing touches a database. The numbers are baked in from the last build.</dd>
       <dt>When you press Run live</dt>
@@ -62,13 +78,11 @@
   <section class="track">
     <div class="track-no">03</div>
     <h2>Where ClickHouse earns its keep</h2>
-    <ul class="earns">
-      <li>Is vinyl just old albums again? 22 million rows, about a tenth of a second.</li>
-      <li>The colour chart looks up the colour description of every pressing, all 40 million rows, in the list the AI sorted once at build time. That takes about a tenth of a second too.</li>
-      <li>Finding the people on my shelf means going through 256 million credits, which takes a third of a second.</li>
-      <li>What to buy next reads 111 million person-to-album edges.</li>
-      <li>And the 40 hours come straight out of 182 million tracks.</li>
-    </ul>
+    <p>All of this runs on my laptop. Working out whether vinyl is mostly old albums again (B1) reads 22 million rows in about a
+      tenth of a second. The colour chart matches the colour description of every vinyl pressing against the list the AI sorted at
+      build time, which is 40 million rows and about a tenth of a second too. Finding the people on my shelf goes through 252 million
+      credits in a third of a second, and what to buy next reads 125 million rows in a quarter. The running time on the hidden track
+      comes out of 182 million tracks.</p>
   </section>
 
   <section class="track">

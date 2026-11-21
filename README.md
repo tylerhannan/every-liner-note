@@ -44,7 +44,7 @@ Discogs posts a new dump each month. Swap in the date and rebuild.
 
 Export your collection from Discogs (Collection → Export), drop the CSV (or the zip Discogs sends) in the repo root, and run `./build.sh --ai`. The build uses the newest one it finds. The `--ai` part writes notes about the people on your records and sorts any new vinyl colours, which needs Ollama running.
 
-Every number, chart, and list comes from your shelf. The title and the closing lines are mine, so change those in `web/index.html`.
+Every number, chart, and list comes from your shelf. The title, the closing lines, and the link preview tags at the top are mine, so change those in `web/index.html`.
 
 ## Run it live
 
