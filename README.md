@@ -4,7 +4,7 @@ I wanted to know what my record shelf looks like next to everything else on viny
 
 You can see it at [tylerhannan.github.io/every-liner-note](https://tylerhannan.github.io/every-liner-note/).
 
-![The top of the page: the headline, the Discogs and shelf numbers, and the first two rows of my records as sleeves](docs/screenshot.png)
+![The top of the page: the headline, the Discogs and shelf numbers, and the first two rows of my records](docs/screenshot.jpg)
 
 ## Set up
 
@@ -79,6 +79,6 @@ The colour section works live too, but its numbers barely change from year to ye
 
 ## Credits
 
-Catalogue data comes from the [Discogs monthly data dumps](https://data.discogs.com/), released under CC0. Most cover images come from the [Cover Art Archive](https://coverartarchive.org/), matched through [MusicBrainz](https://musicbrainz.org/) at build time. The rest come from the Discogs API when you hover.
+Catalogue data comes from the [Discogs monthly data dumps](https://data.discogs.com/), released under CC0. Most cover images come from the [Cover Art Archive](https://coverartarchive.org/), matched through [MusicBrainz](https://musicbrainz.org/) at build time. The rest come from the Discogs API as they scroll into view, and aren't kept for more than six hours.
 
 This application uses Discogs' API but is not affiliated with, sponsored or endorsed by Discogs. 'Discogs' is a trademark of Zink Media, LLC.

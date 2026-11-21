@@ -186,18 +186,23 @@ window.VIZ = (() => {
   };
   const remember = (id, url) => { try { localStorage.setItem("cover:" + id, JSON.stringify({ url, t: Date.now() })); } catch {} };
 
-  // One API call at a time, 2.5 s apart, so sweeping the mouse across the wall stays under 25 a minute
+  // Discogs allows about 25 calls a minute without a login. A burst of 12, then one every 5 seconds, can't go over that
+  // in any minute, even for a shelf with far more records missing from the Cover Art Archive than mine.
   const pendingCovers = new Map();
-  let lastCall = 0, waitUntil = 0;
+  const BURST = 12, EVERY_MS = 5000;
+  let tokens = BURST, refilled = Date.now(), waitUntil = 0;
   const coverUrl = id => {
     const hit = cached(id);
     if (hit) return Promise.resolve(hit);
     if (pendingCovers.has(id)) return pendingCovers.get(id);
     const p = new Promise(resolve => {
       const go = async () => {
-        const delay = Math.max(lastCall + 2500, waitUntil) - Date.now();
+        const now = Date.now();
+        tokens = Math.min(BURST, tokens + (now - refilled) / EVERY_MS);
+        refilled = now;
+        const delay = Math.max(waitUntil - now, tokens >= 1 ? 0 : (1 - tokens) * EVERY_MS);
         if (delay > 0) return setTimeout(go, delay);
-        lastCall = Date.now();
+        tokens -= 1;
         try {
           const res = await fetch(`https://api.discogs.com/releases/${id}`);
           if (res.status === 429) { waitUntil = Date.now() + 60000; return setTimeout(go, 60000); }
@@ -213,6 +218,17 @@ window.VIZ = (() => {
     p.then(() => pendingCovers.delete(id));
     return p;
   };
+
+  // Run fn once el is near the screen. Without IntersectionObserver, run it now.
+  const watchers = new Map();
+  const observer = "IntersectionObserver" in window ? new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    observer.unobserve(e.target);
+    const fn = watchers.get(e.target);
+    watchers.delete(e.target);
+    if (fn) fn();
+  }), { rootMargin: "300px" }) : null;
+  const inView = (el, fn) => { if (!observer) return fn(); watchers.set(el, fn); observer.observe(el); };
 
   // Vinyl colours as the colours themselves, shared by B2's dots and the records on the sleeves
   const SWATCH = {
@@ -254,24 +270,25 @@ window.VIZ = (() => {
       a.querySelector(".credit").textContent = "Cover Art Archive";
       img.loading = "lazy";
       img.addEventListener("load", () => { if (caa) a.classList.add("show-cover"); }, { once: true });
-      img.addEventListener("error", () => { caa = null; a.classList.remove("caa", "show-cover"); img.removeAttribute("src"); a.querySelector(".credit").textContent = "Data provided by Discogs"; }, { once: true });
+      img.addEventListener("error", () => { caa = null; a.classList.remove("caa", "show-cover"); img.removeAttribute("src"); a.querySelector(".credit").textContent = "Data provided by Discogs"; inView(a, fromDiscogs); }, { once: true });
       img.src = `https://coverartarchive.org/${caa}/front-250`;
     }
-    let active = false;
-    const show = () => {
-      active = true;
-      a.classList.add("out");
-      if (caa) return;
-      if (img.src) return a.classList.add("show-cover");
+    // No Cover Art Archive cover: ask Discogs once the sleeve scrolls into view, and keep its credit showing
+    let asked = false;
+    const fromDiscogs = () => {
+      if (caa || asked) return;
+      asked = true;
       a.classList.add("fetching");
       coverUrl(r.release_id).then(url => {
         a.classList.remove("fetching");
-        if (!url) return;
-        img.addEventListener("load", () => { if (active) a.classList.add("show-cover"); }, { once: true });
+        if (!url || caa) return;
+        img.addEventListener("load", () => a.classList.add("show-cover"), { once: true });
         img.src = url;
       });
     };
-    const hide = () => { active = false; a.classList.remove("out", "fetching"); if (!caa) a.classList.remove("show-cover"); };
+    if (!caa) inView(a, fromDiscogs);
+    const show = () => { a.classList.add("out"); fromDiscogs(); };
+    const hide = () => a.classList.remove("out");
     a.addEventListener("pointerenter", show);
     a.addEventListener("pointerleave", hide);
     a.addEventListener("focus", show);
