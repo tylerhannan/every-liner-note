@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Every Liner Note</title>
+  <meta name="description" content="My record shelf, the whole of Discogs, and ClickHouse.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <!-- DRAFT COPY: written by Claude in Tyler's voice, for Tyler to rewrite -->
+  <header class="masthead">
+    <div class="masthead-row">
+      <span class="masthead-cat">Last updated <span data-fill="updated"></span></span>
+      <span class="spacer"></span>
+      <a class="how-link" href="how.html">How does this work?</a>
+      <button id="connect-open" class="connect-open" type="button">Run live</button>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch light or dark">◐</button>
+    </div>
+    <h1 class="masthead-title">Reading every liner note at once</h1>
+    <p class="masthead-lede">I read liner notes. Who played on it, where it was pressed, what colour the vinyl is, how long it runs.
+      Discogs has the liner notes for <span data-fill="releases"></span> releases, and I have <span data-fill="records"></span> records.
+      So I loaded all of Discogs into ClickHouse to see what my shelf looks like next to everyone else's.</p>
+    <dl class="stats">
+      <div><dt>releases on Discogs</dt><dd data-fill="stat-releases"></dd></div>
+      <div><dt>credits in them</dt><dd data-fill="stat-credits"></dd></div>
+      <div><dt>records on my shelf</dt><dd data-fill="records"></dd></div>
+    </dl>
+  </header>
+
+  <header class="side-label" aria-label="Side A">
+    <span class="side">Side A</span><span>The shelf</span>
+  </header>
+
+  <section class="track" id="a1" tabindex="-1">
+    <div class="track-no">A1</div>
+    <h2><span data-fill="records"></span> records, so far</h2>
+    <p>I'm still scanning them in. The oldest album first came out in <span data-fill="first-year"></span> and the newest in
+      <span data-fill="last-year"></span>, and between them they credit <span data-fill="people"></span> people. Discogs knows
+      <span data-fill="versions"></span> different pressings of these same albums, which is a lot of ways to sell the same record.</p>
+    <div class="cover-wall" id="cover-wall"></div>
+    <p class="footnote">Hover over a sleeve to slide the record out. The cover comes from Discogs.</p>
+    <details class="query" data-query="summary"></details>
+  </section>
+
+  <section class="track" id="a2" tabindex="-1">
+    <div class="track-no">A2</div>
+    <h2>More <span data-fill="standout-genre"></span> than most</h2>
+    <p><span data-fill="standout-genre"></span> is <span data-fill="standout-shelf"></span> of my shelf and <span data-fill="standout-discogs"></span>
+      of all vinyl <span data-fill="genre-since"></span>. Blame <span data-fill="standout-records"></span>.</p>
+    <div class="legend" aria-hidden="true">
+      <span><i class="dot dot-mine"></i>My shelf</span>
+      <span><i class="dot dot-all"></i>All vinyl <span data-fill="genre-since"></span></span>
+    </div>
+    <div class="chart" id="chart-genres" role="img" aria-label="Genre share on my shelf against all vinyl since 2015"></div>
+    <details class="query" data-query="genres"></details>
+  </section>
+
+  <header class="side-label" aria-label="Side B">
+    <span class="side">Side B</span><span>This pressing</span>
+  </header>
+
+  <section class="track" id="b1" tabindex="-1">
+    <div class="track-no">B1</div>
+    <h2>When was it made?</h2>
+    <div class="hero">
+      <div class="hero-number" data-fill="share-latest"></div>
+      <div class="hero-text">of the vinyl that came out in <span data-fill="latest-year"></span> was an album at least ten years old.
+        <span class="then">In 1975 it was <span data-fill="share-1975"></span>. Mine is <span data-fill="shelf-share"></span>,
+        which makes me a very average record buyer.</span></div>
+    </div>
+    <div class="chart" id="chart-share" role="img" aria-label="Share of vinyl releases each year that reissue an album at least ten years old, with my shelf marked"></div>
+    <details class="query" data-query="revival_by_age" data-view="share"></details>
+    <p class="footnote">Hardly science, to be fair. I'm calling a pressing a reissue when its album first came out at least ten years
+      earlier. Discogs' own "Reissue" and "Repress" tags land in about the same place for 2025 (<span data-fill="tagged-share"></span>).
+      Best-ofs count as new albums, though, and another <span data-fill="comp-share"></span> of 2025's vinyl is compilations, mostly of
+      old songs. The real number is a bit higher.</p>
+    <details class="query" data-query="reissue_check"></details>
+    <details class="more">
+      <summary>My shelf, record by record</summary>
+      <div class="legend" aria-hidden="true">
+        <span><i class="dot dot-all"></i>First released</span>
+        <span><i class="dot" style="background: var(--new)"></i>Pressed new</span>
+        <span><i class="dot" style="background: var(--catalogue)"></i>2–9 years later</span>
+        <span><i class="dot" style="background: var(--reissue)"></i>10+ years later</span>
+      </div>
+      <div class="chart" id="chart-shelf" role="img" aria-label="Each record on my shelf, from first release year to pressing year"></div>
+      <p class="footnote"><span data-fill="shelf-undated"></span> of mine sit out of that percentage. Discogs either doesn't date the
+        pressing or doesn't tie it to an album.</p>
+      <details class="query" data-query="shelf"></details>
+    </details>
+  </section>
+
+  <section class="track" id="b2" tabindex="-1">
+    <div class="track-no">B2</div>
+    <h2>What's it pressed on?</h2>
+    <p>Limited vinyl tells you its colour in words, and Discogs has <span data-fill="colour-phrases"></span> different ways of saying it:
+      "coke bottle green", "arctic pearl", "pink [baby pink]". Nobody's writing a regex for that. So, at build time, ClickHouse's
+      <code>aiClassify</code> read each phrase once and sorted it into a colour. The most common is <span data-fill="top-colour-all"></span>.
+      Mine lean <span data-fill="top-colour-mine"></span>.</p>
+    <div class="legend" aria-hidden="true">
+      <span><i class="dot dot-mine"></i>My coloured records</span>
+      <span><i class="dot dot-all"></i>All limited vinyl since 2015</span>
+    </div>
+    <div class="chart" id="chart-colours" role="img" aria-label="Vinyl colours on my shelf against all limited vinyl since 2015"></div>
+    <details class="query" data-query="colours"></details>
+    <details class="query ai-query" data-ai="colours_ai_sql"></details>
+    <p class="footnote">I checked 100 at random and the model got about 95 right. It thinks "bone" is grey and "burgundy" is purple,
+      which, fine. It has only seen the 2,013 most common phrases, about 60% of them, and two SQL rules stop it calling "180g" black or
+      a purple label purple vinyl.</p>
+  </section>
+
+  <header class="side-label" aria-label="Side C">
+    <span class="side">Side C</span><span>The people</span>
+  </header>
+
+  <section class="track" id="c1" tabindex="-1">
+    <div class="track-no">C1</div>
+    <h2>Who made it?</h2>
+    <p>The same people keep turning up on my records, across different artists. These are the credits on my own copies, the exact
+      pressings on my shelf. The notes are <code>aiGenerate</code>, written once at build time from each person's credits and nothing else.</p>
+    <ol class="people" id="glue"></ol>
+    <details class="query" data-query="glue"></details>
+    <details class="query ai-query" data-ai="notes_sql"></details>
+  </section>
+
+  <header class="side-label" aria-label="Side D">
+    <span class="side">Side D</span><span>Who made it matters</span>
+  </header>
+
+  <section class="track" id="d1" tabindex="-1">
+    <div class="track-no">D1</div>
+    <h2>So what should I buy next?</h2>
+    <p>Discogs doesn't know what anybody listens to, but it does know who played on what. So these are albums I don't own, on vinyl
+      since 2020, made by people from several of my records. They're ranked by how many of my records they draw on, and none of them are
+      by an artist I already have.</p>
+    <ol class="people next" id="next"></ol>
+    <details class="query" data-query="next"></details>
+    <p class="footnote">Credits count from any pressing of an album. Discogs often has the full credits on one edition and none on the original.</p>
+    <p class="kicker">Who made a record matters as much as whose name is on the front. It just isn't always the best guide to what you'll like.</p>
+  </section>
+
+  <header class="side-label side-hidden" aria-label="Hidden track">
+    <span class="side">Hidden track</span><span>After the run-out groove</span>
+  </header>
+
+  <section class="track" id="h1" tabindex="-1">
+    <div class="track-no">H1</div>
+    <h2>Shelf life</h2>
+    <div class="hero">
+      <div class="hero-number" data-fill="hours"></div>
+      <div class="hero-text">end to end. That's <span data-fill="sides"></span> sides, or <span data-fill="flips"></span> trips to the turntable.
+        <span class="then">Start on a Friday at 7pm, skip sleeping, and you're done by <span data-fill="done-at"></span>.</span></div>
+    </div>
+    <p>The longest is <span data-fill="longest"></span>. The shortest is <span data-fill="shortest"></span>.</p>
+    <details class="query" data-query="runtime"></details>
+    <div class="fit">
+      <h3>So how long have you got?</h3>
+      <p>Type how many minutes you have and get the best combination of up to four of my records to fill it.</p>
+      <p class="fit-ask"><label for="fit-minutes">I've got</label>
+        <input id="fit-minutes" type="number" min="1" max="6000" value="60" inputmode="numeric"> minutes.
+        <span class="fit-presets"><button type="button" data-fit="20">a coffee</button><button type="button" data-fit="45">a commute</button><button type="button" data-fit="120">an evening</button><button type="button" data-fit="240">a vibe coding session</button></span></p>
+      <div id="fit-out" aria-live="polite"></div>
+      <details class="query" data-query="fit"></details>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p>Discogs data from the <span data-fill="dump-date"></span> dump. My shelf as of <span data-fill="shelf-date"></span>.</p>
+    <p>This application uses Discogs' API but is not affiliated with, sponsored or endorsed by Discogs. 'Discogs' is a trademark of Zink Media, LLC.
+      Catalogue data comes from the <a href="https://data.discogs.com/">Discogs monthly data dumps</a> (CC0).</p>
+  </footer>
+</main>
+<div class="keys" aria-hidden="true">↑ ↓ to step through</div>
+<dialog id="connect" class="connect">
+  <form method="dialog">
+    <h2>Run it live</h2>
+    <p>Everything on this page came out of SQL. Connect a ClickHouse with the <code>discogs</code> database loaded and you can run
+      each query again, or edit it first. Use a read-only user. The password stays in this browser tab.</p>
+    <label>HTTP endpoint <input name="url" type="url" required placeholder="http://localhost:8123 or https://host.clickhouse.cloud:8443" autocomplete="url"></label>
+    <label>User <input name="user" placeholder="default" autocomplete="username"></label>
+    <label>Password <input name="password" type="password" autocomplete="current-password"></label>
+    <label class="check"><input name="remember" type="checkbox" checked> Remember until this tab closes</label>
+    <p class="connect-status" role="status"></p>
+    <div class="connect-actions">
+      <button type="submit" class="pick-btn">Connect</button>
+      <button type="button" class="pick-btn ghost" data-cancel>Cancel</button>
+      <button type="button" class="pick-btn ghost" data-disconnect>Disconnect</button>
+    </div>
+    <p class="footnote">This works with ClickHouse Cloud or a server on your laptop (<code>./dev/live.sh</code>), with no setup.
+      Use https for anything that isn't on your own machine.</p>
+  </form>
+</dialog>
+<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+<script src="common.js"></script>
+<script src="live.js"></script>
+<script src="data/act1.js"></script>
+<script src="act1.js"></script>
+<script src="data/act2.js"></script>
+<script src="act2.js"></script>
+<script src="data/act3.js"></script>
+<script src="act3.js"></script>
+<script src="data/act4.js"></script>
+<script src="act4.js"></script>
+</body>
+</html>

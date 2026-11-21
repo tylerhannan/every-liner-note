@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How It Works</title>
+  <meta name="description" content="How the shelf page is built: Discogs dumps, Parquet, ClickHouse, and a little AI at build time.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header class="side-label" aria-label="Liner notes">
+    <span class="side">Liner notes</span>
+    <span>How this works</span>
+    <span class="spacer"></span>
+    <a class="how-link" href="index.html">Back to the record</a>
+  </header>
+
+  <!-- DRAFT COPY: written by Claude in Tyler's voice, for Tyler to rewrite -->
+  <section class="track">
+    <div class="track-no">01</div>
+    <h1>One month of Discogs, one shelf, one database</h1>
+    <p class="lede">Everything on the record comes from two places: the monthly Discogs data dump, which is the whole catalogue as
+      CC0, and the CSV export of my own collection. ClickHouse does the rest. Every number on the page comes out of a SQL query you
+      can open, and, if you connect a ClickHouse of your own, run again.</p>
+
+    <ol class="flow">
+      <li><b>Discogs data dump</b><span>12.7 GB of gzipped XML: 19.6M releases, 10.3M artists, 2.6M albums, 2.4M labels</span></li>
+      <li><b>discogskit</b><span>turns the XML into flat Parquet in about six minutes, sub-tracks and all</span></li>
+      <li><b>ClickHouse</b><span><code>INSERT … SELECT FROM file()</code> loads it into MergeTree in about 40 seconds: 252M credits, 182M tracks, 67M person-to-album edges</span></li>
+      <li><b>My shelf</b><span>the Discogs collection export, loaded alongside</span></li>
+      <li><b>Build</b><span>runs every query on the page and writes the results to static files, in about 20 seconds</span></li>
+      <li><b>This page</b><span>static HTML on GitHub Pages. No server, unless you bring one</span></li>
+    </ol>
+  </section>
+
+  <section class="track">
+    <div class="track-no">02</div>
+    <h2>What runs when</h2>
+    <dl class="when">
+      <dt>Once a month</dt>
+      <dd>Download the dump, convert it, load it. Discogs publishes a full snapshot each month rather than changes, so the whole thing
+        gets rebuilt. It's cheap enough that this is fine.</dd>
+      <dt>Once per build, with AI</dt>
+      <dd>ClickHouse's AI functions run once, at build time, and never on the live page. <code>aiClassify</code> sorts the 85,688 ways
+        Discogs describes vinyl colour into plain colours (the 2,013 most common phrases so far, about 95% right on a random check), and
+        <code>aiGenerate</code> writes the short notes about the people on my shelf. Locally that's a small model through Ollama; in ClickHouse
+        Cloud it's the same SQL with a bigger one.</dd>
+      <dt>Every time you open the page</dt>
+      <dd>Nothing touches a database. The numbers are baked in from the last build.</dd>
+      <dt>When you press Run live</dt>
+      <dd>The page sends the exact query from that panel to the ClickHouse you connected, and shows what came back and how long it took.
+        You can edit the SQL first. Use a read-only user.</dd>
+      <dt>When you hover over a sleeve</dt>
+      <dd>The cover is fetched from the Discogs API for that one record, kept for under six hours as their terms ask, and credited to Discogs.</dd>
+    </dl>
+  </section>
+
+  <section class="track">
+    <div class="track-no">03</div>
+    <h2>Where ClickHouse earns its keep</h2>
+    <ul class="earns">
+      <li>Is vinyl just old albums again? 22 million rows, about a tenth of a second.</li>
+      <li>The colour chart looks up the colour description of every pressing, all 40 million rows, in the list the AI sorted once at build time. That takes about a tenth of a second too.</li>
+      <li>Finding the people on my shelf means going through 256 million credits, which takes a third of a second.</li>
+      <li>What to buy next reads 111 million person-to-album edges.</li>
+      <li>And the 40 hours come straight out of 182 million tracks.</li>
+    </ul>
+  </section>
+
+  <section class="track">
+    <div class="track-no">04</div>
+    <h2>Run it yourself</h2>
+    <p>You need <code>clickhouse</code>, <code>discogskit</code>, and your own Discogs collection export in the repo root. Then:</p>
+    <pre class="howto">./build.sh --dump 20261101   # first time: download and load the dump
+./build.sh                   # after that: rebuild the page
+./dev/live.sh                # optional: a local server for Run live</pre>
+    <p>With <code>./dev/live.sh</code> running, press Run live and connect to <code>http://localhost:8123</code> as <code>web</code>,
+      password <code>vinyl-local</code>.</p>
+  </section>
+
+  <footer class="site-footer">
+    <p>This application uses Discogs' API but is not affiliated with, sponsored or endorsed by Discogs. 'Discogs' is a trademark of Zink Media, LLC.
+      Catalogue data comes from the <a href="https://data.discogs.com/">Discogs monthly data dumps</a> (CC0).</p>
+  </footer>
+</main>
+</body>
+</html>

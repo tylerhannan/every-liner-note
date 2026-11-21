@@ -1,0 +1,55 @@
+<!-- Local ClickHouse server for testing the page's live mode, shaped like the Cloud setup will be.
+     Run from the repo root with: clickhouse server, config-file dev/server.xml (see dev/README) -->
+<clickhouse>
+    <logger>
+        <level>warning</level>
+        <log>data/server/clickhouse.log</log>
+        <errorlog>data/server/clickhouse.err.log</errorlog>
+    </logger>
+    <listen_host>127.0.0.1</listen_host>
+    <http_port>8123</http_port>
+    <tcp_port>9000</tcp_port>
+    <path>data/chlocal/</path>
+    <tmp_path>data/server/tmp/</tmp_path>
+    <user_files_path>data/server/user_files/</user_files_path>
+
+    <profiles>
+        <default/>
+        <!-- What the page's visitors get: read-only queries, short and small. No AI calls: the web user has no AI FUNCTIONS grant -->
+        <web>
+            <readonly>2</readonly>
+            <max_execution_time>10</max_execution_time>
+            <max_result_rows>10000</max_result_rows>
+            <result_overflow_mode>break</result_overflow_mode>
+            <max_memory_usage>4000000000</max_memory_usage>
+            <constraints>
+                <max_execution_time><max>10</max></max_execution_time>
+                <max_result_rows><max>10000</max></max_result_rows>
+                <max_memory_usage><max>4000000000</max></max_memory_usage>
+            </constraints>
+        </web>
+    </profiles>
+
+    <users>
+        <default>
+            <password></password>
+            <networks><ip>127.0.0.1</ip><ip>::1</ip></networks>
+            <profile>default</profile>
+            <quota>default</quota>
+            <access_management>1</access_management>
+            <named_collection_control>1</named_collection_control>
+        </default>
+        <web>
+            <password>vinyl-local</password>
+            <networks><ip>127.0.0.1</ip><ip>::1</ip></networks>
+            <profile>web</profile>
+            <quota>default</quota>
+            <grants>
+                <query>GRANT SELECT ON discogs.*</query>
+                <query>GRANT dictGet ON discogs.*</query>
+            </grants>
+        </web>
+    </users>
+
+    <quotas><default/></quotas>
+</clickhouse>

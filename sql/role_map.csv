@@ -1,0 +1,301 @@
+role,category,link
+Written-By,writer,weak
+Producer,producer_engineer,strong
+Vocals,vocalist,strong
+Composed By,writer,weak
+Engineer,producer_engineer,strong
+Guitar,musician,strong
+Arranged By,writer,weak
+Lyrics By,writer,weak
+Music By,writer,weak
+Drums,musician,strong
+Mixed By,producer_engineer,strong
+Bass,musician,strong
+Backing Vocals,vocalist,strong
+Featuring,vocalist,strong
+Remix,producer_engineer,strong
+Recorded By,producer_engineer,strong
+Photography By,visual,none
+Piano,musician,strong
+Mastered By,technical,none
+Keyboards,musician,strong
+Percussion,musician,strong
+Performer,musician,strong
+Design,visual,none
+Conductor,musician,strong
+Violin,musician,strong
+Liner Notes,other,none
+Trumpet,musician,strong
+Artwork,visual,none
+Orchestra,musician,strong
+Lead Vocals,vocalist,strong
+Acoustic Guitar,musician,strong
+Electric Guitar,musician,strong
+Programmed By,musician,strong
+Executive-Producer,business,none
+Synthesizer,musician,strong
+Organ,musician,strong
+Management,business,none
+Art Direction,visual,none
+Songwriter,writer,weak
+Saxophone,musician,strong
+Trombone,musician,strong
+Written By,writer,weak
+Tenor Saxophone,musician,strong
+Words By,writer,weak
+Cover,visual,none
+Cello,musician,strong
+Flute,musician,strong
+Co-producer,producer_engineer,strong
+Voice,vocalist,strong
+Choir,vocalist,strong
+Musician,musician,strong
+Bass Guitar,musician,strong
+Lacquer Cut By,technical,none
+Voice Actor,vocalist,strong
+Lead Guitar,musician,strong
+Edited By,producer_engineer,strong
+Soloist,musician,strong
+Strings,musician,strong
+Directed By,producer_engineer,strong
+Viola,musician,strong
+Alto Saxophone,musician,strong
+Chorus,vocalist,strong
+Layout,visual,none
+Clarinet,musician,strong
+Coordinator,business,none
+Electric Piano,musician,strong
+Technician,technical,none
+Soprano Vocals,vocalist,strong
+Guest,musician,strong
+Harmonica,musician,strong
+Illustration,visual,none
+Rhythm Guitar,musician,strong
+Band,musician,strong
+Tenor Vocals,vocalist,strong
+Accordion,musician,strong
+Drum Programming,musician,strong
+A&R,business,none
+Compiled By,other,none
+Horns,musician,strong
+Instruments,musician,strong
+Double Bass,musician,strong
+Mandolin,musician,strong
+Adapted By,writer,weak
+Synth,musician,strong
+Ensemble,musician,strong
+Remastered By,technical,none
+Orchestrated By,writer,weak
+Rap,vocalist,strong
+Congas,musician,strong
+Other,other,none
+Banjo,musician,strong
+Baritone Saxophone,musician,strong
+DJ Mix,musician,strong
+Electric Bass,musician,strong
+Leader,musician,strong
+Fiddle,musician,strong
+Bass Vocals,vocalist,strong
+Text By,writer,weak
+Supervised By,producer_engineer,strong
+Accompanied By,musician,strong
+Sleeve Notes,other,none
+Artwork By,visual,none
+Vibraphone,musician,strong
+Soprano Saxophone,musician,strong
+Harmony Vocals,vocalist,strong
+Scratches,musician,strong
+Graphics,visual,none
+Crew,business,none
+Graphic Design,visual,none
+Flugelhorn,musician,strong
+Effects,musician,strong
+Film Director,visual,none
+Tambourine,musician,strong
+Baritone Vocals,vocalist,strong
+Painting,visual,none
+Oboe,musician,strong
+Electronics,musician,strong
+Harp,musician,strong
+Booking,business,none
+Translated By,other,none
+Photography,visual,none
+Narrator,vocalist,strong
+Music Director,musician,strong
+Handclaps,musician,strong
+French Horn,musician,strong
+Sleeve,visual,none
+Harpsichord,musician,strong
+Recording Supervisor,producer_engineer,strong
+Sampler,musician,strong
+Steel Guitar,musician,strong
+Slide Guitar,musician,strong
+Solo Vocal,vocalist,strong
+Pedal Steel Guitar,musician,strong
+Chorus Master,musician,strong
+Concept By,other,none
+Drum,musician,strong
+Design Concept,visual,none
+Executive Producer,business,none
+Horn,musician,strong
+Sounds,musician,strong
+Alto Vocals,vocalist,strong
+Mellotron,musician,strong
+Acoustic Bass,musician,strong
+Promotion,business,none
+Legal,business,none
+Compilation Producer,other,none
+Contrabass,musician,strong
+Editor,other,none
+Tuba,musician,strong
+Read By,vocalist,strong
+Clavinet,musician,strong
+Brass,musician,strong
+Mezzo-soprano Vocals,vocalist,strong
+Recorder,musician,strong
+Author,writer,weak
+Presenter,other,none
+Production Manager,business,none
+Bongos,musician,strong
+Film Producer,visual,none
+Bass Clarinet,musician,strong
+Libretto By,writer,weak
+Bassoon,musician,strong
+Reissue Producer,other,none
+Bells,musician,strong
+Dobro,musician,strong
+Backing Band,musician,strong
+Marimba,musician,strong
+Research,other,none
+Contractor,business,none
+Creative Director,visual,none
+Cornet,musician,strong
+Electric Organ,musician,strong
+Timbales,musician,strong
+Woodwind,musician,strong
+Twelve-String Guitar,musician,strong
+Noises,musician,strong
+Concertmaster,musician,strong
+Grand Piano,musician,strong
+Product Manager,business,none
+Bouzouki,musician,strong
+Typography,visual,none
+Coro,vocalist,strong
+Violoncello,musician,strong
+Tabla,musician,strong
+Beats,musician,strong
+Classical Guitar,musician,strong
+Sitar,musician,strong
+Glockenspiel,musician,strong
+Reeds,musician,strong
+Sound Designer,producer_engineer,strong
+Shaker,musician,strong
+Whistle,musician,strong
+Stylist,visual,none
+Cymbal,musician,strong
+Sequenced By,musician,strong
+Harmonium,musician,strong
+Make-Up,visual,none
+Loops,musician,strong
+Drum Machine,musician,strong
+Interviewee,other,none
+Transcription By,technical,none
+Timpani,musician,strong
+Project Manager,business,none
+Lap Steel Guitar,musician,strong
+Musical Assistance,musician,strong
+Transferred By,technical,none
+Hair,visual,none
+Computer,musician,strong
+Instrumentation By,writer,weak
+Public Relations,business,none
+Ukulele,musician,strong
+Copyist,technical,none
+Electronic Drums,musician,strong
+Script By,writer,weak
+Bass Trombone,musician,strong
+Bagpipes,musician,strong
+Tape,musician,strong
+Melodica,musician,strong
+Maracas,musician,strong
+Lute,musician,strong
+Camera Operator,visual,none
+Lighting,visual,none
+Piccolo Flute,musician,strong
+Contralto Vocals,vocalist,strong
+Speech,vocalist,strong
+Turntables,musician,strong
+Booklet Editor,other,none
+Dulcimer,musician,strong
+Adapted By (Text),writer,weak
+Cowbell,musician,strong
+Post Production,technical,none
+Realization,producer_engineer,strong
+Celesta,musician,strong
+Flamenco Guitar,musician,strong
+Film Editor,visual,none
+MC,vocalist,strong
+Gong,musician,strong
+12-String Acoustic Guitar,musician,strong
+Xylophone,musician,strong
+Cadenza,writer,weak
+Tracking By,producer_engineer,strong
+Alto Flute,musician,strong
+Oud,musician,strong
+Vocoder,musician,strong
+Plated By,technical,none
+Consultant,business,none
+Triangle,musician,strong
+Interviewer,other,none
+Tin Whistle,musician,strong
+Hosted By,other,none
+Autoharp,musician,strong
+Zither,musician,strong
+Created By,other,none
+Bodhrán,musician,strong
+Baritone Guitar,musician,strong
+Baglama,musician,strong
+Snare,musician,strong
+English Horn,musician,strong
+Fretless Bass,musician,strong
+Guitar Synthesizer,musician,strong
+Tambura,musician,strong
+Viola da Gamba,musician,strong
+Tape Op,producer_engineer,strong
+Djembe,musician,strong
+Logo,visual,none
+Countertenor Vocals,vocalist,strong
+Bass Drum,musician,strong
+Stage Manager,business,none
+Cameraman,visual,none
+Music Consultant,business,none
+Restoration,technical,none
+Jew's Harp,musician,strong
+Steel Drums,musician,strong
+Tour Manager,business,none
+Theremin,musician,strong
+Fortepiano,musician,strong
+Score Editor,technical,none
+Score,writer,weak
+Video Editor,visual,none
+Written-by,writer,weak
+Resonator Guitar,musician,strong
+Whistling,musician,strong
+Field Recording,producer_engineer,strong
+Koto,musician,strong
+Chimes,musician,strong
+Guiro,musician,strong
+Choreography,visual,none
+Marketing,business,none
+Costume Designer,visual,none
+Washboard,musician,strong
+Shamisen,musician,strong
+Administrator,business,none
+Kalimba,musician,strong
+Advisor,business,none
+Goblet Drum,musician,strong
+Didgeridoo,musician,strong
+Hurdy Gurdy,musician,strong
+Samples,musician,strong
+Euphonium,musician,strong
+Kazoo,musician,strong

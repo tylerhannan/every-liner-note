@@ -1,0 +1,12 @@
+# Dumps, Parquet, and the ClickHouse stores (about 21 GB), all rebuilt by ./build.sh --dump
+data/*
+# ...except the AI step's output, so a rebuild doesn't need Ollama
+!data/ai/
+data/ai/people_facts.jsonl
+
+# Raw Discogs collection exports. The page data in web/data/ is what gets published.
+*collection*.csv
+*collection*.zip
+
+.DS_Store
+__pycache__/
