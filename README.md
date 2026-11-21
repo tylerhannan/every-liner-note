@@ -42,7 +42,7 @@ Discogs posts a new dump each month. Swap in the date and rebuild.
 
 ## Use your own collection
 
-Export your collection from Discogs (Collection → Export), drop the CSV (or the zip Discogs sends) in the repo root, and run `./build.sh --ai`. The build uses the newest one it finds. The `--ai` part writes notes about the people on your records and sorts any new vinyl colours, which needs Ollama running.
+Export your collection from Discogs (Collection → Export), drop the CSV (or the zip Discogs sends) in the repo root, and run `./build.sh --ai`. The build uses the newest one it finds. The `--ai` part writes notes about the people on your records and sorts the vinyl colours, which needs Ollama running. It only asks the model about what it hasn't seen before, so a rebuild with a few new records is quick. Add `--fresh` to redo everything. Every build also looks up new records on MusicBrainz for their covers, a second or two each, so your first build takes a few minutes longer.
 
 Every number, chart, and list comes from your shelf. The title, the closing lines, and the link preview tags at the top are mine, so change those in `web/index.html`.
 
@@ -79,6 +79,6 @@ The colour section works live too, but its numbers barely change from year to ye
 
 ## Credits
 
-Catalogue data comes from the [Discogs monthly data dumps](https://data.discogs.com/), released under CC0. Cover images on hover come from the Discogs API.
+Catalogue data comes from the [Discogs monthly data dumps](https://data.discogs.com/), released under CC0. Most cover images come from the [Cover Art Archive](https://coverartarchive.org/), matched through [MusicBrainz](https://musicbrainz.org/) at build time. The rest come from the Discogs API when you hover.
 
 This application uses Discogs' API but is not affiliated with, sponsored or endorsed by Discogs. 'Discogs' is a trademark of Zink Media, LLC.

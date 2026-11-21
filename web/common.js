@@ -214,13 +214,26 @@ window.VIZ = (() => {
     return p;
   };
 
-  // A record on my shelf as a sleeve: the disc's label is coloured by how long after the album this pressing came out
+  // Vinyl colours as the colours themselves, shared by B2's dots and the records on the sleeves
+  const SWATCH = {
+    grey: "#7d7b78", silver: "#b9bcc1", white: "#ffffff", clear: "#cfd9df", yellow: "#f2c40f", gold: "#c9a227",
+    orange: "#ee7a1f", red: "#c8102e", pink: "#f08cb4", purple: "#6c3fa3", blue: "#1f5fbf", green: "#2f8f4e", brown: "#7a4a2a",
+    multicolour: "url(#multi)",
+  };
+  const grooves = c => c === "multicolour" ? "conic-gradient(#c8102e, #f2c40f, #2f8f4e, #1f5fbf, #6c3fa3, #c8102e)"
+    : c === "clear" ? "repeating-radial-gradient(circle, #cfd9df88 0 1.2px, #ffffff55 1.2px 2.6px)"
+    : `repeating-radial-gradient(circle, ${SWATCH[c]} 0 1.2px, color-mix(in srgb, ${SWATCH[c]}, #fff 22%) 1.2px 2.6px)`;
+
+  // A record on my shelf as a sleeve. The disc's label is coloured by how long after the album this pressing came out,
+  // and coloured vinyl comes out in its own colour.
   const band = r => (!r.pressed || !r.first_out ? "unknown" : r.pressed - r.first_out >= 10 ? "reissue" : r.pressed - r.first_out >= 2 ? "catalogue" : "new");
   const sleeve = (r, { mini = false } = {}) => {
     const a = document.createElement("a");
     a.className = mini ? "sleeve mini" : "sleeve";
     a.href = `https://www.discogs.com/release/${r.release_id}`;
     a.style.setProperty("--label", r.pressed && r.first_out ? `var(--${band(r)})` : "var(--ink-3)");
+    const vinyl = ((window.ACT1 && window.ACT1.vinyl) || {})[r.release_id];
+    if (SWATCH[vinyl]) a.style.setProperty("--grooves", grooves(vinyl));
     a.setAttribute("aria-label", `${cleanName(r.artist)}, ${r.title}, on Discogs`);
     a.innerHTML = `<span class="disc" aria-hidden="true"></span>` +
       `<span class="jacket"><span class="sleeve-text"><span class="sleeve-artist"></span><span class="sleeve-title"></span>` +
@@ -233,10 +246,22 @@ window.VIZ = (() => {
     a.querySelector(".sleeve-year").textContent = r.pressed || "n.d.";
     const img = a.querySelector("img");
     img.alt = `Cover of ${r.title}`;
+    // Most covers come from the Cover Art Archive, found at build time, and show straight away.
+    // The rest wait for a hover and come from the Discogs API, which can't be kept for more than six hours.
+    let caa = ((window.ACT1 && window.ACT1.covers) || {})[r.release_id];
+    if (caa) {
+      a.classList.add("caa");
+      a.querySelector(".credit").textContent = "Cover Art Archive";
+      img.loading = "lazy";
+      img.addEventListener("load", () => { if (caa) a.classList.add("show-cover"); }, { once: true });
+      img.addEventListener("error", () => { caa = null; a.classList.remove("caa", "show-cover"); img.removeAttribute("src"); a.querySelector(".credit").textContent = "Data provided by Discogs"; }, { once: true });
+      img.src = `https://coverartarchive.org/${caa}/front-250`;
+    }
     let active = false;
     const show = () => {
       active = true;
       a.classList.add("out");
+      if (caa) return;
       if (img.src) return a.classList.add("show-cover");
       a.classList.add("fetching");
       coverUrl(r.release_id).then(url => {
@@ -246,7 +271,7 @@ window.VIZ = (() => {
         img.src = url;
       });
     };
-    const hide = () => { active = false; a.classList.remove("out", "show-cover", "fetching"); };
+    const hide = () => { active = false; a.classList.remove("out", "fetching"); if (!caa) a.classList.remove("show-cover"); };
     a.addEventListener("pointerenter", show);
     a.addEventListener("pointerleave", hide);
     a.addEventListener("focus", show);
@@ -320,5 +345,5 @@ window.VIZ = (() => {
     });
   });
 
-  return { fmt, pct, el, text, niceTicks, topRounded, rightRounded, clip, cleanName, showTip, hideTip, key, fill, queries, aiPanels, onDraw, toast, onLive, missing, sleeve };
+  return { fmt, pct, el, text, niceTicks, topRounded, rightRounded, clip, cleanName, showTip, hideTip, key, fill, queries, aiPanels, onDraw, toast, onLive, missing, sleeve, SWATCH };
 })();

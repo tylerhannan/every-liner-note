@@ -70,8 +70,10 @@
       <dt>When you press Run live</dt>
       <dd>The page sends the exact query from that panel to the ClickHouse you connected, and shows what came back and how long it took.
         You can edit the SQL first. Use a read-only user.</dd>
-      <dt>When you hover over a sleeve</dt>
-      <dd>The cover is fetched from the Discogs API for that one record, kept for under six hours as their terms ask, and credited to Discogs.</dd>
+      <dt>Covers</dt>
+      <dd>Most covers are already on the page, because the build finds them on the Cover Art Archive through MusicBrainz, once per
+        record. For the rest, hovering over a sleeve fetches the cover from the Discogs API for that one record, kept for under six hours
+        as their terms ask, and credited to Discogs.</dd>
     </dl>
   </section>
 
@@ -98,7 +100,8 @@
 
   <footer class="site-footer">
     <p>This application uses Discogs' API but is not affiliated with, sponsored or endorsed by Discogs. 'Discogs' is a trademark of Zink Media, LLC.
-      Catalogue data comes from the <a href="https://data.discogs.com/">Discogs monthly data dumps</a> (CC0).</p>
+      Catalogue data comes from the <a href="https://data.discogs.com/">Discogs monthly data dumps</a> (CC0). Most covers come from the
+      <a href="https://coverartarchive.org/">Cover Art Archive</a>, found through <a href="https://musicbrainz.org/">MusicBrainz</a>.</p>
   </footer>
 </main>
 </body>

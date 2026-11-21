@@ -25,11 +25,7 @@
   });
 
   // B2: colours. These hexes are the vinyl colours themselves, so colour is the data here, not an encoding.
-  const SWATCH = {
-    grey: "#7d7b78", silver: "#b9bcc1", white: "#ffffff", clear: "#cfd9df", yellow: "#f2c40f", gold: "#c9a227",
-    orange: "#ee7a1f", red: "#c8102e", pink: "#f08cb4", purple: "#6c3fa3", blue: "#1f5fbf", green: "#2f8f4e", brown: "#7a4a2a",
-    multicolour: "url(#multi)",
-  };
+  const SWATCH = window.VIZ.SWATCH;
   const pale = c => ["white", "clear", "silver", "yellow"].includes(c);
   const stats = D.colour_stats.rows[0];
   // Compare like with like: of records that name a colour other than black, what share is each colour
