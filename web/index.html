@@ -203,8 +203,8 @@
       <span class="connect-hint">A read-only user on the same Discogs tables. Nothing to type.</span>
     </div>
     <p class="connect-status" role="status"></p>
-    <details class="connect-own">
-      <summary>Or connect your own ClickHouse</summary>
+    <div class="connect-own">
+      <h3>Or connect your own ClickHouse</h3>
       <p>It needs the <code>discogs</code> database
         <a href="https://github.com/tylerhannan/every-liner-note#your-own-clickhouse-cloud">loaded</a>, and a read-only user. The
         password stays in this browser tab.</p>
@@ -215,7 +215,7 @@
       <div class="connect-actions"><button type="submit" class="pick-btn">Connect</button></div>
       <p class="footnote">This works with ClickHouse Cloud or a server on your laptop (<code>./dev/live.sh</code>), with no setup.
         Use https for anything that isn't on your own machine.</p>
-    </details>
+    </div>
     <div class="connect-actions">
       <button type="button" class="pick-btn ghost" data-cancel>Close</button>
       <button type="button" class="pick-btn ghost" data-disconnect>Disconnect</button>

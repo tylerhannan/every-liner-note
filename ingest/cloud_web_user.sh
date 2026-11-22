@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Create the read-only user the public page connects as. Its password ends up in the page source, so all it gets is
-# SELECT on discogs.*, short queries, and a quota for each visitor's IP address.
+# SELECT on discogs.*, short queries that read at most 1.5 billion rows (the page's heaviest reads 333 million),
+# and a quota for each visitor's IP address.
 #   CH_SERVICE=every-liner-note ./ingest/cloud_web_user.sh     # prints the password to put in web/live.js
 # Running it again makes a new password, which breaks the page until live.js has it. WEB_PASSWORD=... keeps the old one.
 set -euo pipefail
@@ -8,12 +9,15 @@ cd "$(dirname "$0")/.."
 source ingest/ch.sh
 PASSWORD=${WEB_PASSWORD:-$(python3 -I -c 'import secrets; print(f"Liner-{secrets.token_urlsafe(18)}-9")')}
 
+# MIN 1 as well as MAX, since 0 means no limit at all for each of these
 chq "CREATE SETTINGS PROFILE OR REPLACE web_public SETTINGS
   readonly = 2,
-  max_execution_time = 20 MAX 20,
-  max_result_rows = 10000 MAX 10000,
+  max_execution_time = 20 MIN 1 MAX 20,
+  max_result_rows = 10000 MIN 1 MAX 10000,
   result_overflow_mode = 'break' READONLY,
-  max_memory_usage = 4000000000 MAX 4000000000,
+  max_memory_usage = 4000000000 MIN 1 MAX 4000000000,
+  max_rows_to_read = 1500000000 MIN 1 MAX 1500000000,
+  read_overflow_mode = 'throw' READONLY,
   max_concurrent_queries_for_user = 8 READONLY"
 chq "CREATE USER OR REPLACE web IDENTIFIED WITH sha256_password BY '$PASSWORD' SETTINGS PROFILE 'web_public'"
 chq "GRANT SELECT ON discogs.* TO web"

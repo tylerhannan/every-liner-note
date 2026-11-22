@@ -22,10 +22,11 @@
             <max_result_rows>10000</max_result_rows>
             <result_overflow_mode>break</result_overflow_mode>
             <max_memory_usage>4000000000</max_memory_usage>
+            <!-- A min as well as a max, since 0 means no limit -->
             <constraints>
-                <max_execution_time><max>10</max></max_execution_time>
-                <max_result_rows><max>10000</max></max_result_rows>
-                <max_memory_usage><max>4000000000</max></max_memory_usage>
+                <max_execution_time><min>1</min><max>10</max></max_execution_time>
+                <max_result_rows><min>1</min><max>10000</max></max_result_rows>
+                <max_memory_usage><min>1</min><max>4000000000</max></max_memory_usage>
             </constraints>
         </web>
     </profiles>

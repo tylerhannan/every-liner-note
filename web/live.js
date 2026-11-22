@@ -54,7 +54,6 @@ window.LIVE = (() => {
     const status = dlg.querySelector(".connect-status");
     const btn = document.getElementById("connect-open");
     const label = () => { btn.textContent = conn ? `Live · ${conn.name || new URL(conn.url).host}` : "Run live"; };
-    const own = dlg.querySelector(".connect-own");
     const pub = dlg.querySelector("[data-public]");
     if (PUBLIC) {
       pub.querySelector("[data-public-connect]").addEventListener("click", async () => {
@@ -71,13 +70,12 @@ window.LIVE = (() => {
       });
     } else {
       pub.hidden = true;
-      own.open = true;
     }
     document.documentElement.classList.toggle("is-live", !!conn);
     label();
     onChange(label);
     btn.addEventListener("click", () => {
-      if (conn && conn !== PUBLIC && conn.url !== (PUBLIC || {}).url) { form.url.value = conn.url; form.user.value = conn.user; own.open = true; }
+      if (conn && conn !== PUBLIC && conn.url !== (PUBLIC || {}).url) { form.url.value = conn.url; form.user.value = conn.user; }
       status.textContent = "";
       dlg.showModal();
     });

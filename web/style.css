@@ -242,11 +242,8 @@ ol.people li > * { grid-column: 2; }
 .connect-public { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 16px 0 6px; }
 .connect-hint { font-size: 14px; color: var(--ink-3); }
 .connect-own { margin: 8px 0 14px; border-top: 1px solid var(--rule); padding-top: 12px; }
-.connect-own > summary { cursor: pointer; font: 500 14px var(--sans); color: var(--ink-2); list-style: none; }
-.connect-own > summary::-webkit-details-marker { display: none; }
-.connect-own > summary::before { content: "▸ "; }
-.connect-own[open] > summary::before { content: "▾ "; }
-.connect-own > p { margin-top: 10px; }
+.connect-own h3 { font: 600 16px var(--serif); margin: 0; }
+.connect-own > p { margin-top: 8px; }
 
 /* How it works page */
 .flow { list-style: none; padding: 0; counter-reset: flow; max-width: 64ch; }
