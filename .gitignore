@@ -9,5 +9,8 @@ data/ai/people_facts.jsonl
 *collection*.csv
 *collection*.zip
 
+# clickhousectl's saved Cloud login
+.clickhouse/
+
 .DS_Store
 __pycache__/

@@ -153,16 +153,8 @@ def note_rows(path):
 def load_ai_tables():
     path = os.path.join(AI_DIR, "colours.tsv")
     if os.path.exists(path):
-        ch(["--multiquery", "--query", f"""
-            CREATE TABLE IF NOT EXISTS discogs.vinyl_colours (phrase String, colour LowCardinality(String)) ENGINE = MergeTree ORDER BY phrase;
-            TRUNCATE TABLE discogs.vinyl_colours;
-            -- The model calls anything that isn't a colour ("180g", "1st pressing") black, so black has to be said out loud
-            INSERT INTO discogs.vinyl_colours
-            -- and "purple labels" is the label's colour, not the vinyl's
-            SELECT phrase, multiIf(colour = 'black' AND NOT match(phrase, 'black|noir|schwarz|zwart|nero|negro|onyx|jet|ebony|obsidian|coal|midnight'), 'not a colour',
-                                   match(phrase, 'label') AND NOT match(phrase, 'vinyl|wax|disc|record'), 'not a colour',
-                                   colour)
-            FROM file('{path}', TSV, 'phrase String, colour String')"""])
+        sql = open(os.path.join(ROOT, "sql", "ai", "vinyl_colours.sql"), encoding="utf-8").read()
+        ch(["--multiquery", "--query", sql.replace("__COLOURS__", f"file('{path}', TSV, 'phrase String, colour String')")])
 
 
 def people_notes():
