@@ -53,20 +53,24 @@ window.LIVE = (() => {
     const form = dlg.querySelector("form");
     const status = dlg.querySelector(".connect-status");
     const btn = document.getElementById("connect-open");
+    // Grey while connecting, red only when something went wrong
+    const say = (msg, error = false) => { status.textContent = msg; status.classList.toggle("error", error); };
     const label = () => { btn.textContent = conn ? `Live · ${conn.name || new URL(conn.url).host}` : "Run live"; };
     const pub = dlg.querySelector("[data-public]");
     if (PUBLIC) {
       pub.querySelector("[data-public-connect]").addEventListener("click", async () => {
-        status.textContent = "Connecting. If nobody's used it for a while it has to wake up, which can take up to half a minute.";
+        say("Connecting…");
+        const slow = setTimeout(() => say("Still connecting. If nobody's used it for a while it has to wake up, which can take up to half a minute."), 2500);
         const prev = conn;
         conn = PUBLIC;
         try {
           await query("SELECT count() AS n FROM discogs.edges");
           set(PUBLIC, true);
-          status.textContent = "";
+          say("");
           dlg.close();
           if (window.VIZ) window.VIZ.toast("Connected. Edit any SQL panel and press its Run live.");
-        } catch (err) { conn = prev; status.textContent = err.message; }
+        } catch (err) { conn = prev; say(err.message, true); }
+        finally { clearTimeout(slow); }
       });
     } else {
       pub.hidden = true;
@@ -76,7 +80,7 @@ window.LIVE = (() => {
     onChange(label);
     btn.addEventListener("click", () => {
       if (conn && conn !== PUBLIC && conn.url !== (PUBLIC || {}).url) { form.url.value = conn.url; form.user.value = conn.user; }
-      status.textContent = "";
+      say("");
       dlg.showModal();
     });
     dlg.querySelector("[data-disconnect]").addEventListener("click", () => { set(null); dlg.close(); });
@@ -84,20 +88,20 @@ window.LIVE = (() => {
     form.addEventListener("submit", async ev => {
       ev.preventDefault();
       const c = { url: form.url.value.trim().replace(/\/$/, ""), user: form.user.value.trim() || "default", password: form.password.value };
-      status.textContent = "Checking…";
+      say("Checking…");
       const prev = conn;
       conn = c;
       try {
         const r = await query("SELECT count() AS n FROM discogs.edges");
         set(c, form.remember.checked);
-        status.textContent = "";
+        say("");
         form.password.value = "";
         dlg.close();
         console.info(`Connected: discogs.edges has ${r.rows[0].n} rows`);
       } catch (err) {
         conn = prev;
-        status.textContent = err.message.includes("UNKNOWN_DATABASE") || err.message.includes("UNKNOWN_TABLE")
-          ? "Connected, but this server has no discogs database. Load it first (see the README)." : err.message;
+        say(err.message.includes("UNKNOWN_DATABASE") || err.message.includes("UNKNOWN_TABLE")
+          ? "Connected, but this server has no discogs database. Load it first (see the README)." : err.message, true);
       }
     });
   });

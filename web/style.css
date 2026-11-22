@@ -232,7 +232,8 @@ ol.people li > * { grid-column: 2; }
 .connect label { display: flex; flex-direction: column; gap: 4px; margin: 12px 0; font: 12px var(--mono); color: var(--ink-3); }
 .connect input:not([type=checkbox]) { font: 15px var(--sans); color: var(--ink); background: var(--paper-2); border: 1px solid var(--rule); border-radius: 6px; padding: 9px 10px; }
 .connect label.check { flex-direction: row; align-items: center; gap: 8px; font: 14px var(--sans); color: var(--ink-2); }
-.connect-status { min-height: 1.4em; font-size: 14px; color: var(--reissue); }
+.connect-status { min-height: 1.4em; font-size: 14px; color: var(--ink-3); }
+.connect-status.error { color: var(--reissue); }
 .connect-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 6px 0 12px; }
 .pick-btn { font: 500 14px var(--sans); color: var(--ink); background: none; border: 1px solid var(--ink); border-radius: 999px; padding: 9px 16px; cursor: pointer; }
 .pick-btn:hover { background: var(--ink); color: var(--paper); }
