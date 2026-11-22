@@ -138,6 +138,7 @@ window.VIZ = (() => {
       const sql = sqlText(pre);
       const edited = sql.trim() !== q.sql.trim();
       stats.textContent = "running live…";
+      const slow = setTimeout(() => { stats.textContent = "still running. A Cloud service that's been asleep takes a few seconds to wake up…"; }, 4000);
       try {
         const r = await window.LIVE.query(sql, q.params || {});
         stats.innerHTML = `<b class="live-dot">live${edited ? ", your edit" : ""}</b> ${fmt(r.rows_read)} rows read in ${r.elapsed_s.toFixed(3)} s · ${fmt(r.rows.length)} rows back`;
@@ -154,6 +155,7 @@ window.VIZ = (() => {
         }
         if (edited) det.open = true;
       } catch (err) { stats.textContent = err.message.slice(0, 300); det.open = true; }
+      finally { clearTimeout(slow); }
     });
   });
 

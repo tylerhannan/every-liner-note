@@ -58,7 +58,7 @@ code { font-family: var(--mono); font-size: 0.9em; }
 .theme-toggle:hover, .connect-open:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .is-live .connect-open { border-color: var(--catalogue); color: var(--catalogue); }
 .is-live .connect-open::before { content: "● "; }
-.connect-soon, .wip { margin: 0 0 14px; padding: 10px 12px; border: 1px dashed var(--reissue); border-radius: 6px; font-size: 14px; color: var(--ink-2); }
+.wip { margin: 0 0 14px; padding: 10px 12px; border: 1px dashed var(--reissue); border-radius: 6px; font-size: 14px; color: var(--ink-2); }
 .wip { margin: 28px 0 0; max-width: 64ch; font-size: 15px; }
 .soon-tag { display: inline-block; margin-right: 6px; font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--reissue); }
 
@@ -237,6 +237,16 @@ ol.people li > * { grid-column: 2; }
 .pick-btn { font: 500 14px var(--sans); color: var(--ink); background: none; border: 1px solid var(--ink); border-radius: 999px; padding: 9px 16px; cursor: pointer; }
 .pick-btn:hover { background: var(--ink); color: var(--paper); }
 .pick-btn.ghost { border-color: var(--rule); color: var(--ink-2); }
+.pick-btn.primary { background: var(--ink); color: var(--paper); }
+.pick-btn.primary:hover { background: none; color: var(--ink); }
+.connect-public { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 16px 0 6px; }
+.connect-hint { font-size: 14px; color: var(--ink-3); }
+.connect-own { margin: 8px 0 14px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.connect-own > summary { cursor: pointer; font: 500 14px var(--sans); color: var(--ink-2); list-style: none; }
+.connect-own > summary::-webkit-details-marker { display: none; }
+.connect-own > summary::before { content: "▸ "; }
+.connect-own[open] > summary::before { content: "▾ "; }
+.connect-own > p { margin-top: 10px; }
 
 /* How it works page */
 .flow { list-style: none; padding: 0; counter-reset: flow; max-width: 64ch; }

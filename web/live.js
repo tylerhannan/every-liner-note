@@ -1,7 +1,11 @@
-// Live mode: the same queries the page was built from, run against your own ClickHouse.
+// Live mode: the same queries the page was built from, run against my ClickHouse Cloud service or your own ClickHouse.
 // Same approach as kill-your-dashboards: a text/plain POST with credentials as URL parameters is a "simple" CORS
 // request, so there's no preflight, and add_http_cors_header=1 makes ClickHouse send Access-Control-Allow-Origin.
 window.LIVE = (() => {
+  // My ClickHouse Cloud service and its public read-only user, so Run live works without typing anything. The password
+  // is public on purpose: the user can only read the discogs tables, briefly, within a quota per visitor
+  // (ingest/cloud_web_user.sh). In a fork, point this at your own service, or set it to null.
+  const PUBLIC = { name: "ClickHouse Cloud", url: "https://cfb9jw9292.us-east-1.aws.clickhouse.cloud:8443", user: "web", password: "Liner-OQkjP_npUvD6hR_mKztwPBjj-9" };
   const KEY = "live-connection";
   let conn = null;
   try { conn = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch {}
@@ -10,7 +14,8 @@ window.LIVE = (() => {
   const listeners = [];
 
   async function query(sql, params = {}) {
-    if (!conn) throw new Error("Not connected");
+    if (!conn && PUBLIC) set(PUBLIC, true);
+    if (!conn) throw new Error("Not connected. Press Run live at the top of the page to connect a ClickHouse.");
     const u = new URL(conn.url);
     u.searchParams.set("add_http_cors_header", "1");
     u.searchParams.set("output_format_json_quote_64bit_integers", "0");
@@ -48,12 +53,31 @@ window.LIVE = (() => {
     const form = dlg.querySelector("form");
     const status = dlg.querySelector(".connect-status");
     const btn = document.getElementById("connect-open");
-    const label = () => { btn.textContent = conn ? `Live · ${new URL(conn.url).host}` : "Run live"; };
+    const label = () => { btn.textContent = conn ? `Live · ${conn.name || new URL(conn.url).host}` : "Run live"; };
+    const own = dlg.querySelector(".connect-own");
+    const pub = dlg.querySelector("[data-public]");
+    if (PUBLIC) {
+      pub.querySelector("[data-public-connect]").addEventListener("click", async () => {
+        status.textContent = "Connecting. If nobody's used it for a while it has to wake up, which can take up to half a minute.";
+        const prev = conn;
+        conn = PUBLIC;
+        try {
+          await query("SELECT count() AS n FROM discogs.edges");
+          set(PUBLIC, true);
+          status.textContent = "";
+          dlg.close();
+          if (window.VIZ) window.VIZ.toast("Connected. Edit any SQL panel and press its Run live.");
+        } catch (err) { conn = prev; status.textContent = err.message; }
+      });
+    } else {
+      pub.hidden = true;
+      own.open = true;
+    }
     document.documentElement.classList.toggle("is-live", !!conn);
     label();
     onChange(label);
     btn.addEventListener("click", () => {
-      if (conn) { form.url.value = conn.url; form.user.value = conn.user; }
+      if (conn && conn !== PUBLIC && conn.url !== (PUBLIC || {}).url) { form.url.value = conn.url; form.user.value = conn.user; own.open = true; }
       status.textContent = "";
       dlg.showModal();
     });

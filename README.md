@@ -51,27 +51,43 @@ Every number, chart, and list comes from your shelf. The title, the closing line
 
 ## Run it live
 
+On [the live page](https://tylerhannan.github.io/every-liner-note/), press **Run live** and then **Use my ClickHouse Cloud**. That connects to my Cloud service as a read-only user, with nothing to type. Each SQL panel gets its own Run live button, and you can edit the SQL first. Some sections redraw from what comes back: try `LIMIT 5` on the running time at the bottom.
+
+To run it against your own laptop instead:
+
 ```bash
 ./dev/live.sh
 ```
 
-That starts ClickHouse as a server on `localhost:8123`, with a read-only user. Open the page, press **Run live**, and connect as `web` with the password `vinyl-local`. Each SQL panel gets its own Run live button, and you can edit the SQL first. Some sections redraw from what comes back: try `LIMIT 5` on the running time at the bottom.
+That starts ClickHouse as a server on `localhost:8123`, with a read-only user. Press **Run live**, open **Or connect your own ClickHouse**, and connect as `web` with the password `vinyl-local`. Stop the server (Ctrl-C) before running `./build.sh` again, since they can't share the data folder.
 
-Stop the server (Ctrl-C) before running `./build.sh` again, since they can't share the data folder.
+### Your own ClickHouse Cloud
 
-It works against ClickHouse Cloud too, with a read-only user of your own.
+This is how mine is set up, with [clickhousectl](https://clickhouse.com/docs/interfaces/cli) logged in with an API key.
+
+```bash
+clickhousectl cloud service create --name every-liner-note      # then wait for it to be running
+export CH_SERVICE=every-liner-note
+./ingest/load_cloud.sh 20261101     # the Discogs tables from this repo's data release, plus your shelf
+./ingest/cloud_web_user.sh          # the public read-only user; it prints the password
+```
+
+Put the service's HTTPS endpoint and that password in `PUBLIC` at the top of `web/live.js`. The password ends up in the page on purpose: the user can only read the `discogs` tables, for 20 seconds a query, within an hourly quota per visitor.
+
+For a newer dump, load it with `./build.sh --dump 20261201`, write its Parquet files with `./ingest/export_parquet.sh 20261201`, and put them in a release with `gh release create data-20261201 data/release/20261201/*.parquet`.
 
 ## Things to try live
 
-With `./dev/live.sh` running and the page connected, open a section's SQL, change one line, and press Run live. These are good ones to start with.
+With the page connected, open a section's SQL, change one line, and press Run live. These are good ones to start with.
 
 | Section | Change | What happens |
 |---|---|---|
-| A2, genres | `year >= 2015` to `year BETWEEN 1970 AND 1979` (it's in there twice) | My shelf against 1970s vinyl. The heading changes to whichever genre stands out now. |
-| B1, reissues | `>= 10` to `>= 20` | A reissue has to be 20 years after the album. The big number drops. |
+| A2, genres | `year >= 2015` to `year BETWEEN 1970 AND 1979` (it's in there twice) | My shelf against 1970s vinyl. The heading changes from Stage & Screen to Electronic. |
+| B1, reissues | `>= 10` to `>= 20` | A reissue has to be 20 years after the album. 2025 goes from 29.9% reissues to 24.1%. |
 | C1, the people | `HAVING families >= 2` to `>= 3` | Only people on records by three or more of my artists. Mine's down to Bob Dylan. |
-| D1, buy next | `ORDER BY from_my_records DESC, shared_people DESC` to `ORDER BY shared_people DESC, from_my_records DESC` | Ranks by head count instead. A busy string section wins, and so does Taylor Swift. |
-| Hidden track, how long | add `LIMIT 5` at the end | The running time of my five longest records, and when I'd finish. |
+| D1, buy next | `ORDER BY from_my_records DESC, shared_people DESC` to `ORDER BY shared_people DESC, from_my_records DESC` | Ranks by head count instead. Taylor Swift comes first and second. |
+| D1, buy next | `<= 500` to `<= 5000` | Lets in the people who are on everything. Beatles solo records take over, led by *McCartney III Imagined* from 9 of my records. |
+| Hidden track, how long | add `LIMIT 5` at the end | The running time of my five longest records (8 hours), and when I'd finish. |
 | Hidden track, how long have you got | type a number of minutes | ClickHouse tries every combination of up to four records and picks the best fit. |
 
 The colour section works live too, but its numbers barely change from year to year. If an edit drops a column a section needs, the page says so and stays put.

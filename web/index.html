@@ -197,23 +197,29 @@
 <dialog id="connect" class="connect">
   <form method="dialog">
     <h2>Run it live</h2>
-    <p class="connect-soon"><span class="soon-tag">Coming soon</span> My own ClickHouse Cloud service behind this button, so Run live
-      works without typing anything. For now it needs <a href="https://github.com/tylerhannan/every-liner-note#run-it-live">a ClickHouse
-      of your own</a>.</p>
-    <p>Everything on this page came out of SQL. Connect a ClickHouse with the <code>discogs</code> database loaded and you can run
-      each query again, or edit it first. Use a read-only user. The password stays in this browser tab.</p>
-    <label>HTTP endpoint <input name="url" type="url" required autofocus placeholder="http://localhost:8123 or https://host.clickhouse.cloud:8443" autocomplete="url"></label>
-    <label>User <input name="user" placeholder="default" autocomplete="username"></label>
-    <label>Password <input name="password" type="password" autocomplete="current-password"></label>
-    <label class="check"><input name="remember" type="checkbox" checked> Remember until this tab closes</label>
+    <p>Everything on this page came out of SQL. Connect and you can run each query again, or edit it first and run your version.</p>
+    <div class="connect-public" data-public>
+      <button type="button" class="pick-btn primary" data-public-connect autofocus>Use my ClickHouse Cloud</button>
+      <span class="connect-hint">A read-only user on the same Discogs tables. Nothing to type.</span>
+    </div>
     <p class="connect-status" role="status"></p>
+    <details class="connect-own">
+      <summary>Or connect your own ClickHouse</summary>
+      <p>It needs the <code>discogs</code> database
+        <a href="https://github.com/tylerhannan/every-liner-note#your-own-clickhouse-cloud">loaded</a>, and a read-only user. The
+        password stays in this browser tab.</p>
+      <label>HTTP endpoint <input name="url" type="url" required placeholder="http://localhost:8123 or https://host.clickhouse.cloud:8443" autocomplete="url"></label>
+      <label>User <input name="user" placeholder="default" autocomplete="username"></label>
+      <label>Password <input name="password" type="password" autocomplete="current-password"></label>
+      <label class="check"><input name="remember" type="checkbox" checked> Remember until this tab closes</label>
+      <div class="connect-actions"><button type="submit" class="pick-btn">Connect</button></div>
+      <p class="footnote">This works with ClickHouse Cloud or a server on your laptop (<code>./dev/live.sh</code>), with no setup.
+        Use https for anything that isn't on your own machine.</p>
+    </details>
     <div class="connect-actions">
-      <button type="submit" class="pick-btn">Connect</button>
-      <button type="button" class="pick-btn ghost" data-cancel>Cancel</button>
+      <button type="button" class="pick-btn ghost" data-cancel>Close</button>
       <button type="button" class="pick-btn ghost" data-disconnect>Disconnect</button>
     </div>
-    <p class="footnote">This works with ClickHouse Cloud or a server on your laptop (<code>./dev/live.sh</code>), with no setup.
-      Use https for anything that isn't on your own machine.</p>
   </form>
 </dialog>
 <div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>

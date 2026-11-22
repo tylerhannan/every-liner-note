@@ -27,8 +27,8 @@ for spec in $TABLES; do
   for ((i = 1; i <= n; i++)); do
     chq "INSERT INTO discogs.$t SELECT * FROM url('$BASE/$t.$i.parquet', Parquet) $FOLLOW"
   done
-  have=$(chq "SELECT count() FROM discogs.$t")
-  want=$(chq "SELECT count() FROM url('$BASE/$t.{1..$n}.parquet', Parquet) $FOLLOW")
+  have=$(chq "SELECT count() FROM discogs.$t FORMAT TSV")
+  want=$(chq "SELECT count() FROM url('$BASE/$t.{1..$n}.parquet', Parquet) $FOLLOW FORMAT TSV")
   [[ $have == "$want" ]] || { echo "$t has $have rows but the files have $want. Run this again." >&2; exit 1; }
 done
 
