@@ -85,17 +85,16 @@
     <h2>When was it made?</h2>
     <div class="hero">
       <div class="hero-number" data-fill="share-latest"></div>
-      <div class="hero-text">of the vinyl that came out in <span data-fill="latest-year"></span> was an album at least ten years old.
+      <div class="hero-text">of the vinyl that came out in <span data-fill="latest-year"></span> was an album at least <span data-fill="reissue-age"></span> years old.
         <span class="then">In 1975 it was <span data-fill="share-1975"></span>. Mine is <span data-fill="shelf-share"></span>,
         which makes me a very average record buyer.</span></div>
     </div>
     <div class="chart" id="chart-share" role="img" aria-label="Share of vinyl releases each year that reissue an album at least ten years old, with my shelf marked"></div>
     <details class="query" data-query="revival_by_age" data-view="share"></details>
-    <p class="footnote">Hardly science, to be fair. I'm calling a pressing a reissue when its album first came out at least ten years
-      earlier. Discogs' own "Reissue" and "Repress" tags land in about the same place for 2025 (<span data-fill="tagged-share"></span>).
-      Best-ofs count as new albums, though, and another <span data-fill="comp-share"></span> of 2025's vinyl is compilations, mostly of
+    <p class="footnote">Hardly science, to be fair. I'm calling a pressing a reissue when its album first came out at least <span data-fill="reissue-age"></span> years
+      earlier. Discogs' own "Reissue" and "Repress" tags land in about the same place for <span data-fill="check-year"></span> (<span data-fill="tagged-share"></span>).
+      Best-ofs count as new albums, though, and another <span data-fill="comp-share"></span> of <span data-fill="check-year"></span>'s vinyl is compilations, mostly of
       old songs. The real number is a bit higher.</p>
-    <details class="query" data-query="reissue_check"></details>
     <details class="more">
       <summary>My shelf, record by record</summary>
       <div class="legend" aria-hidden="true">
@@ -116,7 +115,8 @@
     <h2>What's it pressed on?</h2>
     <p>Limited vinyl tells you its colour in words, and Discogs has <span data-fill="colour-phrases"></span> different ways of saying it:
       "coke bottle green", "arctic pearl", "pink [baby pink]". Nobody's writing a regex for that. So, at build time, ClickHouse's
-      <code>aiClassify</code> read each phrase once and sorted it into a colour. The most common is <span data-fill="top-colour-all"></span>.
+      <code>aiClassify</code> read each phrase once and sorted it into a colour. Of the <span data-fill="colour-pressings"></span> limited
+      pressings that name a colour other than black, the most common is <span data-fill="top-colour-all"></span>.
       Mine lean <span data-fill="top-colour-mine"></span>.</p>
     <div class="legend" aria-hidden="true">
       <span><i class="dot dot-mine"></i>My coloured records</span>

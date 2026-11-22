@@ -9,8 +9,10 @@ window.LIVE = (() => {
   const KEY = "live-connection";
   let conn = null;
   try { conn = JSON.parse(sessionStorage.getItem(KEY) || "null"); } catch {}
-  // Mark the page live now, before the SQL panels are built, so a remembered connection makes them editable straight away
+  // Mark the page live now, before the SQL panels are built, so a remembered connection makes them editable straight away.
+  // With a public service to fall back on, every panel's Run live shows even before anyone connects.
   document.documentElement.classList.toggle("is-live", !!conn);
+  document.documentElement.classList.toggle("has-public", !!PUBLIC);
   const listeners = [];
 
   async function query(sql, params = {}) {

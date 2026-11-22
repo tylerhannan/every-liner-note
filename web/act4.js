@@ -60,15 +60,18 @@
       `<ol class="fit-list">${list}</ol><p class="footnote">${best.how}</p>`;
   }
   let pending;
+  // An edit run from the SQL panel (a Try button, say) keeps driving the picker until it's put back
+  let fitSql = D.fit.sql;
   function fit() {
     if (!input || !out) return;
     const cap = Math.max(1, Math.min(6000, Math.round(Number(input.value) || 0)));
+    D.fit.params.minutes = cap;
     clearTimeout(pending);
     if (window.LIVE && window.LIVE.connected()) {
       out.querySelector(".footnote") && (out.querySelector(".footnote").textContent = "asking ClickHouse…");
       pending = setTimeout(async () => {
         try {
-          const r = await window.LIVE.query(D.fit.sql, { minutes: cap });
+          const r = await window.LIVE.query(fitSql, { minutes: cap });
           const row = r.rows[0];
           render(row ? { ...row, how: `<b class="live-dot">live</b> from ClickHouse: ${fmt(row.combinations_that_fit)} combinations fit, best found in ${r.elapsed_s.toFixed(3)} s` } : null);
         } catch (err) { const b = inBrowser(cap); if (b) b.how = `ClickHouse didn't answer (${esc(err.message.slice(0, 80))}), so this was worked out in your browser`; render(b); }
@@ -83,5 +86,12 @@
 
   runtime(D.runtime.rows);
   onLive("runtime", rows => runtime(rows) || "these rows have no seconds and discs columns, so the numbers above stay as they were");
+  onLive("fit", (rows, sql) => {
+    const row = rows[0];
+    if (row && !Array.isArray(row.titles)) return "these rows have no titles column, so the list above stays as it was";
+    fitSql = sql;
+    render(row ? { ...row, how: `<b class="live-dot">live</b> from the SQL panel${sql.trim() !== D.fit.sql.trim() ? ", with your edit" : ""}: ${fmt(row.combinations_that_fit)} combinations fit` } : null);
+    return true;
+  });
   queries(D);
 })();

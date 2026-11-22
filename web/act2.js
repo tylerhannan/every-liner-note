@@ -15,14 +15,19 @@
   // Percentages only use records where Discogs knows both years
   const shelf = shelfAll.filter(r => r.gap !== null);
   const band = gap => (gap >= 10 ? "reissue" : gap >= 2 ? "catalogue" : "new");
-  const shelfReissues = shelf.filter(r => r.gap >= 10).length;
-  const shelfShare = shelfReissues / shelf.length;
+  // The reissue cut-off in years. A live edit of B1's SQL (>= 10 to >= 20, say) moves it for the shelf too.
+  let cut = 10, shelfReissues, shelfShare;
+  const AGE = { 5: "five", 10: "ten", 15: "fifteen", 20: "twenty", 25: "twenty-five", 30: "thirty" };
+  function setShelf() {
+    shelfReissues = shelf.filter(r => r.gap >= cut).length;
+    shelfShare = shelfReissues / shelf.length;
+    fill({ "shelf-reissues": shelfReissues, "shelf-dated": shelf.length, "shelf-share": pct(shelfShare),
+           "shelf-undated": shelfAll.length - shelf.length, "reissue-age": AGE[cut] || String(cut) });
+  }
+  setShelf();
 
   const revivalCopy = () => fill({ "share-latest": pct(full.share), "latest-year": full.year, "partial-year": latest.year, "share-1975": pct(y1975.share) });
   revivalCopy();
-  fill({
-    "shelf-reissues": shelfReissues, "shelf-dated": shelf.length, "shelf-share": pct(shelfShare), "shelf-undated": shelfAll.length - shelf.length,
-  });
 
   // B2: colours. These hexes are the vinyl colours themselves, so colour is the data here, not an encoding.
   const SWATCH = window.VIZ.SWATCH;
@@ -39,11 +44,14 @@
     colourRows = everyone.map(c => ({ colour: c.colour, all: c.pressings / everyoneTotal, mine: (mineByColour[c.colour] || []).length / mineTotal, records: mineByColour[c.colour] || [] }))
       .sort((a, b) => b.all - a.all);
     const topMine = [...colourRows].sort((a, b) => b.mine - a.mine)[0];
-    fill({ "top-colour-all": colourRows[0].colour, "top-colour-mine": topMine && topMine.mine > 0 ? topMine.colour : "black" });
+    fill({ "top-colour-all": colourRows[0].colour, "top-colour-mine": topMine && topMine.mine > 0 ? topMine.colour : "black", "colour-pressings": fmt(everyoneTotal) });
   }
   setColours(D.colours.rows);
-  const check = D.reissue_check.rows[0];
-  fill({ "colour-phrases": fmt(stats.phrases), "tagged-share": pct(check.tagged), "comp-share": pct(check.compilations_counted_new) });
+  const setCheck = c => fill({ "check-year": c.year, "tagged-share": pct(c.tagged), "comp-share": pct(c.compilations_counted_new) });
+  // The footnote's second opinion is 2025's row of the chart query (or the latest year, if an edit drops 2025)
+  const checkRow = rows => rows.find(r => Number(r.year) === 2025) || rows[rows.length - 1];
+  setCheck(checkRow(D.revival_by_age.rows));
+  fill({ "colour-phrases": fmt(stats.phrases) });
 
   function colourDots(container) {
     container.innerHTML = "";
@@ -158,12 +166,16 @@
   onDraw(() => share(document.getElementById("chart-share")));
   onDraw(() => colourDots(document.getElementById("chart-colours")));
   // Live: try changing >= 10 to >= 20 (years between album and pressing), or the year range
-  onLive("revival_by_age", rows => {
+  onLive("revival_by_age", (rows, sql) => {
     const why = missing(rows, ["year", "new", "catalogue", "reissue"]);
     if (why) return why;
+    const m = sql.match(/(?:age|m\.year)\s*>=\s*(\d+)\)\s*AS reissue\b/);
+    cut = m ? Number(m[1]) : 10;
+    setShelf();
     setYears(rows);
     revivalCopy();
     share(document.getElementById("chart-share"));
+    if ("tagged" in rows[0]) setCheck(checkRow(rows));
     return true;
   });
   // Live: try a different year, or drop the 'Limited Edition' condition

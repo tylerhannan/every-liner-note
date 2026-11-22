@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS discogs.credits
     track_position String,
     is_sub_track Bool,
     -- BFS walks both ways, and the projection only carries what a hop needs
-    PROJECTION by_release (SELECT release_id, master_id, artist_id, role, scope ORDER BY release_id, artist_id)
+    -- A second copy sorted by release, for 'who is on these records' (the table's own order suits 'what did this person do')
+    PROJECTION by_release (SELECT * ORDER BY release_id, artist_id)
 )
 ENGINE = MergeTree
 ORDER BY (artist_id, master_id, release_id);

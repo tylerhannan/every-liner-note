@@ -133,11 +133,24 @@ code { font-family: var(--mono); font-size: 0.9em; }
 .q-hide, .query[open] .q-show { display: none; }
 .query[open] .q-hide { display: inline; }
 .q-live { display: none; font: 500 12px var(--sans); color: var(--catalogue); background: none; border: 1px solid var(--catalogue); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
-.is-live .q-live { display: inline-block; }
+.is-live .q-live, .has-public .q-live { display: inline-block; }
 .q-live:hover { background: var(--catalogue); color: var(--paper); }
 .live-dot { color: var(--catalogue); font-weight: 600; }
 .query pre { margin: 10px 0 0; padding: 14px; overflow-x: auto; background: var(--paper-2); border-radius: 6px; color: var(--ink); font-size: 12.5px; white-space: pre; }
 .is-live .query pre[contenteditable="plaintext-only"] { box-shadow: inset 0 0 0 1px var(--catalogue); }
+.query pre mark.q-changed { display: inline-block; min-width: 100%; color: inherit; background: color-mix(in srgb, var(--catalogue) 18%, transparent); box-shadow: -6px 0 0 var(--catalogue); border-radius: 0 2px 2px 0; }
+/* What a query asks, how it works, and edits to try live */
+.q-asks { flex-basis: 100%; font: 500 14px/1.4 var(--sans); color: var(--ink); }
+.q-about { margin: 10px 0 0; padding: 12px 14px; border-left: 2px solid var(--catalogue); background: var(--paper-2); border-radius: 0 6px 6px 0; }
+.q-about p { max-width: 76ch; font: 14px/1.55 var(--sans); color: var(--ink-2); }
+.q-about p + p, .q-about .q-tries { margin-top: 8px; }
+.q-about .q-label, .q-label { display: block; font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); margin-bottom: 4px; }
+.q-tries { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.q-tries li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font: 14px/1.4 var(--sans); color: var(--ink-2); }
+.q-try { font: 12px var(--mono); color: var(--catalogue); background: none; border: 1px solid var(--catalogue); border-radius: 999px; padding: 3px 10px; cursor: pointer; }
+.q-try:hover, .q-try.on { background: var(--catalogue); color: var(--paper); }
+.q-try code { font: inherit; background: none; padding: 0; }
+.q-try.on::after { content: " ×"; }
 .query .table-wrap { max-height: 320px; overflow: auto; margin-top: 10px; }
 .query table { border-collapse: collapse; font-size: 12.5px; }
 .query td, .query th { padding: 3px 12px 3px 0; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }

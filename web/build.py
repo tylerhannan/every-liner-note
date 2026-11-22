@@ -28,7 +28,7 @@ AI_STORE = os.environ.get("CH_AI_PATH", os.path.join(ROOT, "data", "aistore"))
 
 ACTS = {
     "act1": ["records", "summary", "genres"],
-    "act2": ["revival_by_age", "reissue_check", "shelf", "colours", "colour_stats", "shelf_colours"],
+    "act2": ["revival_by_age", "shelf", "colours", "colour_stats", "shelf_colours"],
     "act3": ["glue", "next"],
     "act4": ["runtime", ("fit", "fit", {"minutes": 60})],
 }
@@ -40,13 +40,36 @@ def ch(args, store=STORE):
     return subprocess.run(cmd, check=True, capture_output=True, text=True, cwd=ROOT, stdin=subprocess.DEVNULL).stdout
 
 
+def about(sql):
+    # A query's tagged comments: what it asks, how it works, and edits worth trying live (Try: from => to | what happens).
+    # They go above the panel's SQL, so the SQL shown is the query without them.
+    out, keep, key = {"asks": "", "how": "", "tries": []}, [], None
+    for line in sql.splitlines():
+        m = re.match(r"--\s*(Asks|How|Try):\s*(.*)", line)
+        if m:
+            key = m.group(1).lower()
+            if key == "try":
+                frm, rest = m.group(2).split(" => ", 1)
+                to, says = (rest.split(" | ", 1) + [""])[:2]
+                out["tries"].append({"from": frm.strip(), "to": to.strip(), "says": says.strip()})
+            else:
+                out[key] = m.group(2).strip()
+        elif key in ("asks", "how") and re.match(r"--\s{2,}\S", line):
+            out[key] += " " + line.lstrip("- ").strip()
+        else:
+            key = None
+            keep.append(line)
+    return (out if out["asks"] or out["how"] or out["tries"] else None), "\n".join(keep).strip()
+
+
 def run(sql_path, params=None):
     sql = open(sql_path, encoding="utf-8").read().strip().rstrip(";")
     args = ["--format", "JSON", "--query", sql] + [f"--param_{k}={v}" for k, v in (params or {}).items()]
     res = json.loads(ch(args))
     stats = res.get("statistics", {})
+    tags, shown = about(sql)
     # The page shows the query and what it cost, so keep both alongside the rows
-    return {"rows": res["data"], "sql": sql, "params": params or {},
+    return {"rows": res["data"], "sql": shown, "about": tags, "params": params or {},
             "elapsed_s": round(stats.get("elapsed", 0), 3), "rows_read": stats.get("rows_read", 0)}
 
 

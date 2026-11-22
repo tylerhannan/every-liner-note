@@ -87,10 +87,11 @@ With the page connected, open a section's SQL, change one line, and press Run li
 | C1, the people | `HAVING families >= 2` to `>= 3` | Only people on records by three or more of my artists. Mine's down to Bob Dylan. |
 | D1, buy next | `ORDER BY from_my_records DESC, shared_people DESC` to `ORDER BY shared_people DESC, from_my_records DESC` | Ranks by head count instead. Taylor Swift comes first and second. |
 | D1, buy next | `<= 500` to `<= 5000` | Lets in the people who are on everything. Beatles solo records take over, led by *McCartney III Imagined* from 9 of my records. |
+| B2, colours | add `AND has(r.genres, 'Classical')` after `c.colour != 'not a colour'` | Only classical limited editions. The most common colour changes. |
 | Hidden track, how long | add `LIMIT 5` at the end | The running time of my five longest records (8 hours), and when I'd finish. |
 | Hidden track, how long have you got | type a number of minutes | ClickHouse tries every combination of up to four records and picks the best fit. |
 
-The colour section works live too, but its numbers barely change from year to year. If an edit drops a column a section needs, the page says so and stays put.
+If an edit drops a column a section needs, the page says so and stays put.
 
 ## Publish it
 

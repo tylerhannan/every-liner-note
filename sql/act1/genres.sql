@@ -1,4 +1,8 @@
--- Share of records carrying each genre: my shelf against every vinyl release pressed since 2015
+-- Asks: Which genres does the shelf have more of than vinyl in general?
+-- How: Two passes over the releases table. One joins it to the shelf table, the other takes every vinyl release since
+--   2015, and in both arrayJoin turns each release's genre array into one row per genre. Each count is divided by its own
+--   total, and a LEFT JOIN lines the two shares up by genre. Only the formats, year, and genres columns get read.
+-- Try: year >= 2015 => year BETWEEN 1970 AND 1979 | The shelf against 1970s vinyl. The heading changes to whichever genre stands out.
 WITH shelf AS
 (
     SELECT arrayJoin(r.genres) AS genre, count() / (SELECT count() FROM discogs.shelf) AS shelf_share

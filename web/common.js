@@ -118,13 +118,23 @@ window.VIZ = (() => {
     const rows = det.dataset.view ? views[det.dataset.view]() : q.rows;
     const cols = Object.keys(rows[0]);
     const cell = (c, v) => (typeof v === "number" && !plain.has(c) ? fmt(v) : Array.isArray(v) ? v.join(", ") : v);
-    det.innerHTML = `<summary><span class="q-tag">SQL</span><span class="q-stats">${fmt(q.rows_read)} rows read in ${q.elapsed_s} s</span>` +
+    const ab = q.about || {};
+    const tries = (ab.tries || []).map((t, i) => `<li><button type="button" class="q-try" data-try="${i}"><code>${escHtml(t.to)}</code></button>` +
+      `<span>${escHtml(t.says)}</span></li>`).join("");
+    det.innerHTML = `<summary>${ab.asks ? `<span class="q-asks">${escHtml(ab.asks)}</span>` : ""}<span class="q-tag">SQL</span><span class="q-stats">${fmt(q.rows_read)} rows read in ${q.elapsed_s} s</span>` +
       `<button type="button" class="q-live">Run live</button>` +
       `<span class="q-cta"><span class="q-show">Show SQL and data</span><span class="q-hide">Hide SQL and data</span></span></summary>` +
+      (ab.how || tries ? `<div class="q-about">${ab.how ? `<p><span class="q-label">How it works</span>${escHtml(ab.how)}</p>` : ""}` +
+        (tries ? `<p class="q-label">Try changing</p><ul class="q-tries">${tries}</ul>` : "") + `</div>` : "") +
       `<pre></pre><div class="table-wrap"><table><thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>` +
       rows.map(r => `<tr>${cols.map(c => `<td>${cell(c, r[c])}</td>`).join("")}</tr>`).join("") + `</tbody></table></div>`;
     const pre = det.querySelector("pre");
-    pre.innerHTML = highlight(q.sql);
+    // Lines that differ from the query as built are marked, so a Try, or your own edit, is easy to spot
+    const built = new Set(q.sql.split("\n").map(l => l.trim()));
+    const show = sql => {
+      pre.innerHTML = sql.split("\n").map(l => (built.has(l.trim()) ? highlight(l) : `<mark class="q-changed">${highlight(l)}</mark>`)).join("\n");
+    };
+    show(q.sql);
     withCopy(pre);
     // When connected, the SQL is editable: change it, press Run live, and your version runs
     pre.setAttribute("spellcheck", "false");
@@ -133,10 +143,24 @@ window.VIZ = (() => {
     if (window.LIVE) window.LIVE.onChange(editable);
     const stats = det.querySelector(".q-stats");
     const table = det.querySelector("table");
+    // A Try button swaps its line in the SQL and runs it live; pressing it again puts the line back
+    det.querySelectorAll(".q-try").forEach(b => b.addEventListener("click", ev => {
+      ev.preventDefault();
+      const t = ab.tries[b.dataset.try];
+      const cur = sqlText(pre);
+      const on = !b.classList.contains("on");
+      const next = on ? cur.split(t.from).join(t.to) : cur.split(t.to).join(t.from);
+      if (next === cur) { toast(on ? "That line's already been edited, so this one can't apply" : "Couldn't find the line to put back"); return; }
+      b.classList.toggle("on", on);
+      show(next);
+      det.querySelector(".q-live").click();
+    }));
     det.querySelector(".q-live").addEventListener("click", async ev => {
       ev.preventDefault(); ev.stopPropagation();
       const sql = sqlText(pre);
       const edited = sql.trim() !== q.sql.trim();
+      // Redraw on run rather than while typing, which would move the cursor
+      show(sql);
       stats.textContent = "running live…";
       const slow = setTimeout(() => { stats.textContent = "still running. A Cloud service that's been asleep takes a few seconds to wake up…"; }, 4000);
       try {

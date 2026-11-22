@@ -60,3 +60,16 @@ SELECT b.artist_id, b.work, b.artist_name, b.roles, b.strong,
        w.is_comp AS work_comp
 FROM base AS b
 LEFT JOIN discogs.works AS w ON w.work = b.work;
+
+-- Vinyl pressings counted by year, by how many years after the album they came out, and by two Discogs tags, for B1.
+-- A few thousand rows, so B1 doesn't join every vinyl release to its album each time it runs.
+CREATE OR REPLACE TABLE discogs.vinyl_by_age
+ENGINE = SummingMergeTree ORDER BY (year, age, tagged, compilation) AS
+SELECT r.year AS year, toInt16(r.year - m.year) AS age,
+       has(r.format_descriptions, 'Reissue') OR has(r.format_descriptions, 'Repress') AS tagged,
+       has(r.format_descriptions, 'Compilation') AS compilation,
+       count() AS pressings
+FROM discogs.releases AS r
+JOIN discogs.masters AS m ON m.master_id = r.master_id
+WHERE has(r.formats, 'Vinyl') AND r.year BETWEEN 1955 AND 2026 AND m.year BETWEEN 1900 AND r.year
+GROUP BY year, age, tagged, compilation;

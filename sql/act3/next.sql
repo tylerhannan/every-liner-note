@@ -1,9 +1,13 @@
--- What to buy next: albums I don't own where several of the people behind my shelf worked together.
--- People are those who played, sang, produced, or engineered on my exact copies, minus the main artists and
--- anyone on more than 500 records (they're on everything). Only albums with a vinyl pressing since 2020 count,
--- and not by an artist already on my shelf: the point is finding records through the people, not the name.
+-- Asks: What should the shelf get next? Albums not on the shelf, with a vinyl pressing since 2020, that several of the people
+--   behind the shelf worked on.
+-- How: Starts from the credits for the shelf's pressings, read through the by_release projection, keeping people who
+--   played, sang, produced, or engineered, and dropping anyone credited on more than 500 records. The edges table is
+--   sorted by person, so looking up every other album those people worked on reads only their rows. uniqExact counts
+--   the shared people per album, and albums that draw on the most shelf records rank first.
+-- Try: ORDER BY from_my_records DESC, shared_people DESC => ORDER BY shared_people DESC, from_my_records DESC | Ranks by head count instead.
+-- Try: <= 500 => <= 5000 | Lets in the people who are on everything.
 WITH
-mine AS (SELECT if(r.master_id != 0, r.master_id, 1000000000 + r.release_id) AS work FROM discogs.shelf AS s JOIN discogs.releases AS r ON r.release_id = s.release_id),
+mine AS (SELECT if(master_id != 0, master_id, 1000000000 + release_id) AS work FROM discogs.releases WHERE release_id IN (SELECT release_id FROM discogs.shelf)),
 makers AS
 (
     SELECT c.artist_id AS artist_id, any(c.artist_name) AS name, groupUniqArray(c.release_id) AS from_records
