@@ -12,8 +12,9 @@ data/ai/people_facts.jsonl
 # clickhousectl's saved Cloud login
 .clickhouse/
 
-# Private notes (blog drafts and the like)
+# Private notes and tooling
 notes/
+private/
 
 .DS_Store
 __pycache__/

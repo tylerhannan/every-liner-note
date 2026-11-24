@@ -51,7 +51,7 @@
   // The footnote's second opinion is 2025's row of the chart query (or the latest year, if an edit drops 2025)
   const checkRow = rows => rows.find(r => Number(r.year) === 2025) || rows[rows.length - 1];
   setCheck(checkRow(D.revival_by_age.rows));
-  fill({ "colour-phrases": fmt(stats.phrases) });
+  fill({ "colour-phrases": fmt(stats.phrases), "colour-classified": fmt(stats.classified), "colour-coverage": `${Math.round(stats.coverage * 100)}%` });
 
   function colourDots(container) {
     container.innerHTML = "";

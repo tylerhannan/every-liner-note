@@ -125,9 +125,10 @@
     <div class="chart" id="chart-colours" role="img" aria-label="Vinyl colours on my shelf against all limited vinyl since 2015"></div>
     <details class="query" data-query="colours"></details>
     <details class="query ai-query" data-ai="colours_ai_sql"></details>
-    <p class="footnote">I checked 100 at random and the model got about 95 right. It thinks "bone" is grey and "burgundy" is purple,
-      which, fine. It has only seen the 2,013 most common phrases, about 60% of them, and two SQL rules stop it calling "180g" black or
-      a purple label purple vinyl.</p>
+    <p class="footnote">I checked 100 at random and, by my reading, it got 99 right. The one it missed was "obi black", which I'm fairly
+      sure is the paper strip on a Japanese pressing and not the vinyl. It has only seen <span data-fill="colour-classified"></span> phrases
+      (the most common ones, plus the ones on my shelf), enough for <span data-fill="colour-coverage"></span> of these pressings, and two
+      SQL rules stop it calling "180g" black or a purple label purple vinyl.</p>
   </section>
 
   <header class="side-label" aria-label="Side C">
@@ -187,7 +188,8 @@
   </section>
 
   <footer class="site-footer">
-    <p>Discogs data from the <span data-fill="dump-date"></span> dump. My shelf as of <span data-fill="shelf-date"></span>.</p>
+    <p>Discogs data from the <span data-fill="dump-date"></span> dump. My shelf as of <span data-fill="shelf-date"></span>.
+      <a href="https://github.com/tylerhannan/every-liner-note">Code on GitHub</a>.</p>
     <p>This application uses Discogs' API but is not affiliated with, sponsored or endorsed by Discogs. 'Discogs' is a trademark of Zink Media, LLC.
       Catalogue data comes from the <a href="https://data.discogs.com/">Discogs monthly data dumps</a> (CC0). Most covers come from the
       <a href="https://coverartarchive.org/">Cover Art Archive</a>, found through <a href="https://musicbrainz.org/">MusicBrainz</a>.</p>

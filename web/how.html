@@ -62,9 +62,9 @@
       <dt>Once per build, with AI</dt>
       <dd>ClickHouse's AI functions run once, at build time, and never on the live page. <code>aiClassify</code> sorts the ways Discogs
         describes vinyl colour into plain colours. Limited vinyl since 2015 alone has 85,688 different phrases, and it has done 2,058 of
-        them so far (the 2,000 most common, plus the ones on my shelf), about 95% right on a random check. <code>aiGenerate</code> writes
-        the short notes about the people on my shelf. For now that's
-        a small model on my laptop through Ollama. On ClickHouse Cloud it'll be the same SQL with a bigger one.</dd>
+        them so far (the 2,000 most common, plus the ones on my shelf), 99 of 100 right on a random check. <code>aiGenerate</code> writes
+        the short notes about the people on my shelf. You can run the
+        same SQL yourself against a small model on your laptop through Ollama.</dd>
       <dt>Every time you open the page</dt>
       <dd>Nothing touches a database. The numbers are baked in from the last build.</dd>
       <dt>When you press Run live</dt>
@@ -99,6 +99,7 @@
   </section>
 
   <footer class="site-footer">
+    <p><a href="https://github.com/tylerhannan/every-liner-note">Code on GitHub</a>.</p>
     <p>This application uses Discogs' API but is not affiliated with, sponsored or endorsed by Discogs. 'Discogs' is a trademark of Zink Media, LLC.
       Catalogue data comes from the <a href="https://data.discogs.com/">Discogs monthly data dumps</a> (CC0). Most covers come from the
       <a href="https://coverartarchive.org/">Cover Art Archive</a>, found through <a href="https://musicbrainz.org/">MusicBrainz</a>.</p>
