@@ -2,7 +2,7 @@
 
 I wanted to know what my record shelf looks like next to everything else on vinyl. So I loaded the whole Discogs catalogue into ClickHouse and asked it. This repo builds a static page out of the answers. Every number on it comes from a SQL query you can open, copy, and, if you connect a ClickHouse of your own, run again.
 
-You can see it at [tylerhannan.github.io/every-liner-note](https://tylerhannan.github.io/every-liner-note/).
+You can see it at [records.tylerhannan.com](https://records.tylerhannan.com/).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshot-dark.jpg">
@@ -51,7 +51,7 @@ Every number, chart, and list comes from your shelf. The title, the closing line
 
 ## Run it live
 
-On [the live page](https://tylerhannan.github.io/every-liner-note/), press **Run live** and then **Use my ClickHouse Cloud**. That connects to my Cloud service as a read-only user, with nothing to type. Each SQL panel gets its own Run live button, and you can edit the SQL first. Some sections redraw from what comes back: try `LIMIT 5` on the running time at the bottom.
+On [the live page](https://records.tylerhannan.com/), press **Run live** and then **Use my ClickHouse Cloud**. That connects to my Cloud service as a read-only user, with nothing to type. Each SQL panel gets its own Run live button, and you can edit the SQL first. Some sections redraw from what comes back: try `LIMIT 5` on the running time at the bottom.
 
 To run it against your own laptop instead:
 
