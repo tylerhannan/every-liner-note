@@ -2,6 +2,8 @@
 SELECT artist_id,
        aiGenerate(concat('Write one or two short sentences of liner notes about this person, using only these facts. ',
                          'Name every record. Only give them a role on the record it is listed with. ',
+                         'Write the roles in plain English, so "Recorded By" becomes recorded. ',
+                         'Put each record title in double quotes, in plain text with no Markdown. ',
                          'Do not describe their style or add anything else.\n\n', facts),
                   map('credentials', 'ollama_text', 'temperature', '0.2',
                       'system_prompt', 'You write short, warm, factual liner notes about the people who make records. Use only the facts given.')) AS note

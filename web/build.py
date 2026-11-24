@@ -113,7 +113,9 @@ def classify_colours(fresh=False):
 
 def people_facts():
     # The facts for each glue person, sorted so the same credits always give the same text
-    glue = run(os.path.join(ROOT, "sql", "act3", "glue.sql"))["rows"]
+    # Everyone who qualifies, not just the page's top 15, so a live edit like LIMIT 100 still has a note for each card
+    sql = open(os.path.join(ROOT, "sql", "act3", "glue.sql"), encoding="utf-8").read().strip().rstrip(";")
+    glue = json.loads(ch(["--format", "JSON", "--query", re.sub(r"\nLIMIT \d+$", "", sql)]))["data"]
     titles = {r["release_id"]: r for r in run(os.path.join(ROOT, "sql", "act1", "records.sql"))["rows"]}
     # Roles record by record, so the model never has to guess which role went with which record
     ids = ",".join(str(g["artist_id"]) for g in glue) or "0"
@@ -126,10 +128,13 @@ def people_facts():
     SAY = {"Written-By": "Written-By (a songwriting credit for a song on it)"}
     facts = {}
     for g in glue:
-        recs = "; ".join(f'"{titles[i]["title"]}" by {titles[i]["artist"]}, as {", ".join(SAY.get(r, r) for r in sorted(roles.get((g["artist_id"], i), [])))}'
+        # Discogs' "(2)"-style suffixes tell namesakes apart; they don't belong in a sentence
+        # and some Discogs titles carry invisible left-to-right marks
+        plain = lambda name: re.sub(r"\s*\(\d+\)|[\u200e\u200f]", "", name).strip()
+        recs = "; ".join(f'"{plain(titles[i]["title"])}" by {plain(titles[i]["artist"])}, as {", ".join(SAY.get(r, r) for r in sorted(roles.get((g["artist_id"], i), [])))}'
                          for i in sorted(g["records"]) if i in titles)
-        facts[str(g["artist_id"])] = (f"{g['person']} is credited on these records: {recs}. "
-                                      f"Across Discogs they are credited on {g['works_overall']:,} records in total, in all sorts of roles.")
+        # No career total: the card already shows it, and every note ended on the same sentence about it
+        facts[str(g["artist_id"])] = f"{plain(g['person'])} is credited on these records: {recs}."
     return facts
 
 
