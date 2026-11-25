@@ -29,7 +29,8 @@ AI_STORE = os.environ.get("CH_AI_PATH", os.path.join(ROOT, "data", "aistore"))
 ACTS = {
     "act1": ["records", "summary", "genres"],
     "act2": ["revival_by_age", "shelf", "colours", "colour_stats", "shelf_colours"],
-    "act3": ["glue", "next"],
+    # C2's search runs live as you type; the build shows one search and one person (Jerry Wexler) so it isn't empty
+    "act3": ["glue", "next", ("search", "search", {"name": "wexler"}), ("person", "person", {"artist_id": 248847})],
     "act4": ["runtime", ("fit", "fit", {"minutes": 60})],
 }
 

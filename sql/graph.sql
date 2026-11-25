@@ -73,3 +73,11 @@ FROM discogs.releases AS r
 JOIN discogs.masters AS m ON m.master_id = r.master_id
 WHERE has(r.formats, 'Vinyl') AND r.year BETWEEN 1955 AND 2026 AND m.year BETWEEN 1900 AND r.year
 GROUP BY year, age, tagged, compilation;
+
+-- Everyone credited anywhere, with how many credits they have, for C2's search. Small enough to scan for any part of a name.
+CREATE OR REPLACE TABLE discogs.people
+ENGINE = MergeTree ORDER BY artist_id AS
+SELECT artist_id, any(artist_name) AS name, count() AS credits
+FROM discogs.credits
+WHERE artist_id NOT IN (194, 355, 151641, 118760, 320156, 967691)
+GROUP BY artist_id;

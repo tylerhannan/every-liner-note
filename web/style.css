@@ -325,6 +325,29 @@ ol.people li > * { grid-column: 2; }
 .fit-presets { display: inline-flex; gap: 6px; flex-wrap: wrap; }
 .fit-presets button { font: 500 13px var(--sans); color: var(--ink-2); background: none; border: 1px solid var(--rule); border-radius: 999px; padding: 4px 10px; cursor: pointer; }
 .fit-presets button:hover { color: var(--ink); border-color: var(--ink-3); }
+
+/* C2: search everyone credited on Discogs */
+.search > * + * { margin-top: 14px; }
+.search-ask input { width: min(20ch, 100%); text-align: left; }
+.search-status.error { color: var(--reissue); }
+.search-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 28px; align-items: start; }
+@media (max-width: 720px) { .search-cols { grid-template-columns: 1fr; } }
+.search-hits { list-style: none; padding: 0; margin: 0; }
+.search-hits li { border-bottom: 1px solid var(--grid); }
+.search-hits button { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; width: 100%; background: none; border: 0;
+  border-radius: 4px; padding: 8px 6px; font: 16px var(--sans); color: var(--ink); text-align: left; cursor: pointer; }
+.search-hits button:hover, .search-hits button[aria-pressed="true"] { background: var(--paper-2); }
+.search-hits button[aria-pressed="true"] span:first-child { font-weight: 600; }
+.search-hits .glue-meta { white-space: nowrap; }
+.search-none { padding: 8px 6px; color: var(--ink-3); }
+.person > * + * { margin-top: 10px; }
+.person { transition: opacity 0.2s; }
+.person.loading { opacity: 0.5; }
+.decades { display: flex; gap: 2px; max-width: 460px; }
+.decade { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+.decade-bar { height: 80px; display: flex; align-items: flex-end; border-bottom: 1px solid var(--rule); }
+.decade-bar i { display: block; width: 100%; background: var(--ink-2); border-radius: 4px 4px 0 0; }
+.decade span { font: 11px var(--mono); color: var(--ink-3); text-align: center; margin-top: 4px; white-space: nowrap; }
 .fit-sum { font: 600 18px var(--serif); }
 .fit-list { margin: 0; padding-left: 22px; }
 .fit-list li { margin: 4px 0; }

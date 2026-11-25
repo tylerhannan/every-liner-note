@@ -146,6 +146,25 @@
     <details class="query ai-query" data-ai="notes_sql"></details>
   </section>
 
+  <section class="track" id="c2" tabindex="-1">
+    <div class="track-no">C2</div>
+    <h2>Everyone else's liner notes</h2>
+    <p>C1 only reads the credits on my own copies. This one reads all of them. Type part of a name (a producer, a session player,
+      whoever cut the lacquer) and ClickHouse looks through everyone credited on Discogs, then shows what they did and when.</p>
+    <div class="search">
+      <p class="fit-ask search-ask"><label for="search-name">Look up</label>
+        <input id="search-name" type="search" value="wexler" autocomplete="off" spellcheck="false">
+        <span class="fit-presets" id="search-presets"></span></p>
+      <p class="footnote search-status" id="search-status" aria-live="polite"></p>
+      <div class="search-cols">
+        <ol class="search-hits" id="search-hits"></ol>
+        <div class="person" id="search-person" aria-live="polite"></div>
+      </div>
+      <details class="query" data-query="search"></details>
+      <details class="query" data-query="person"></details>
+    </div>
+  </section>
+
   <header class="side-label" aria-label="Side D">
     <span class="side">Side D</span><span>Who made it matters</span>
   </header>
