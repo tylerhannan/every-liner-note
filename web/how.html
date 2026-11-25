@@ -70,6 +70,9 @@
       <dt>When you press Run live</dt>
       <dd>The page sends the exact query from that panel to my ClickHouse Cloud service, as a read-only user, or to a ClickHouse you
         connect yourself. It shows what came back and how long it took, and you can edit the SQL first.</dd>
+      <dt>When you search (C2)</dt>
+      <dd>C2's search only works live. Type part of a name and the page sends it to my ClickHouse Cloud service, as the same read-only
+        user, or to a ClickHouse you've connected. Until then it shows the one search the build ran, for "wexler".</dd>
       <dt>Covers</dt>
       <dd>Most covers are already on the page, because the build finds them on the Cover Art Archive through MusicBrainz, once per
         record. For the rest, the page asks the Discogs API as each sleeve scrolls into view, keeps the cover for under six hours as their
@@ -83,7 +86,9 @@
     <p>All of this runs on my laptop. Working out whether vinyl is mostly old albums again (B1) reads a summary table that the load
       builds once from 22 million rows, so it takes milliseconds. The colour chart matches the colour description of every vinyl pressing against the list the AI sorted at
       build time, which is 40 million rows and about a tenth of a second too. Finding the people on my shelf goes through 252 million
-      credits in a third of a second, and what to buy next reads 125 million rows in a quarter. The running time on the hidden track
+      credits in a third of a second. Searching everyone in C2 reads every name on Discogs, all 10.3 million of them, in a few
+      hundredths of a second here and a few tenths on Cloud. There's no index on the names, because a full-text index works on whole
+      words and a search for part of a name can't use one. What to buy next reads 125 million rows in a quarter. The running time on the hidden track
       comes out of 182 million tracks.</p>
   </section>
 

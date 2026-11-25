@@ -85,6 +85,9 @@ With the page connected, open a section's SQL, change one line, and press Run li
 | A2, genres | `year >= 2015` to `year BETWEEN 1970 AND 1979` (it's in there twice) | My shelf against 1970s vinyl. The heading changes from Stage & Screen to Electronic. |
 | B1, reissues | `>= 10` to `>= 20` | A reissue has to be 20 years after the album. 2025 goes from 29.9% reissues to 24.1%. |
 | C1, the people | `HAVING families >= 2` to `>= 3` | Only people on records by three or more of my artists. Mine's down to Bob Dylan. |
+| C2, search | type part of a name | ClickHouse reads every name on Discogs and lists the 10 most credited matches, then the first one's credits by role and decade. |
+| C2, search | `ILIKE concat('%', {name:String}, '%')` to `ILIKE concat({name:String}, '%')` | Only names that start with what you typed. "steve" gets Steve Winwood, Steve Cropper, and Steve Harris first. |
+| C2, one person | add `AND c.scope IN ('release_extra', 'track_extra')` after `WHERE c.artist_id = {artist_id:UInt32}` | Only the liner-note credits. For Bob Dylan, Main artist drops out (26,008 credits) and harmonica makes his top four. |
 | D1, buy next | `ORDER BY from_my_records DESC, shared_people DESC` to `ORDER BY shared_people DESC, from_my_records DESC` | Ranks by head count instead. Taylor Swift comes first and second. |
 | D1, buy next | `<= 500` to `<= 5000` | Lets in the people who are on everything. Beatles solo records take over, led by *McCartney III Imagined* from 9 of my records. |
 | B2, colours | add `AND has(r.genres, 'Classical')` after `c.colour != 'not a colour'` | Only classical limited editions. The most common colour changes. |
